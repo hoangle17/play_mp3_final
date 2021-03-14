@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/popup_share"
+        android:icon="@drawable/ic_baseline_share_24"
+        android:iconTint="@android:color/black"
+        android:title="Share" />
+    <item
+        android:id="@+id/popup_download"
+        android:icon="@drawable/ic_baseline_arrow_downward_24"
+        android:iconTint="@android:color/black"
+        android:title="Download" />
+</menu>

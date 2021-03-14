@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Music Life</string>
+    <string name="more_playlist">More playlist</string>
+    <string name="more">more ></string>
+    <string name="char_more">></string>
+    <string name="topic_genre">Topic &amp; Genre</string>
+    <string name="title_album">Album Hot</string>
+    <string name="recommend">Recommend Song</string>
+    <string name="various">Various Artists</string>
+    <string name="lyrics">Lyrics</string>
+    <string name="_1_37">1:37</string>
+    <string name="_4_12">4:12</string>
+    <string name="photograph">Photograph</string>
+    <string name="ed_sheeran">Ed Sheeran</string>
+    <string name="now_playing">Now playing</string>
+    <string name="music_life">Music Life</string>
+</resources>
