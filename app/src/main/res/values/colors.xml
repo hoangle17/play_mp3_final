@@ -22,4 +22,5 @@
     <color name="colorStroke">#BDBDBD</color>
     <color name="colorHint">#ECECEC</color>
     <color name="colorButtonPlay">#5F6A6A</color>
+    <color name="selected_button">#D7DBDD</color>
 </resources>

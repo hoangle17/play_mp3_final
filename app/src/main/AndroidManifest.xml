@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.PlaySongActivity"
-            android:theme="@style/FullScreen"></activity>
+            android:theme="@style/FullScreen" />
         <activity android:name=".activities.ListAlbumActivity" />
         <activity android:name=".activities.GenreFromTopicActivity" />
         <activity android:name=".activities.ListTopicActivity" />

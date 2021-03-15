@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymusic.R;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.squareup.picasso.Picasso;
 
 public class ShowInformationSongFragment extends Fragment {
     View view;
@@ -28,4 +29,11 @@ public class ShowInformationSongFragment extends Fragment {
         textViewSingerPlay = view.findViewById(R.id.txtSingerPlay);
         return view;
     }
+
+    public void setViewsPlaySong(String image, String name, String singer) {
+        Picasso.with(getActivity()).load(image).into(roundedImageView);
+        textViewNameSongPlay.setText(name);
+        textViewSingerPlay.setText(singer);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.example.mymusic.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,15 @@ import com.example.mymusic.R;
 import com.example.mymusic.activities.PlaySongActivity;
 import com.example.mymusic.activities.SongsActivity;
 import com.example.mymusic.adapters.PlayListSongsAdapter;
+import com.example.mymusic.models.Song;
+import com.example.mymusic.services.CommunicationInterface;
 
 public class PlayListSongsFragment extends Fragment {
+    private CommunicationInterface parentActivity;
     View view;
     RecyclerView recyclerViewPlayListSong;
     PlayListSongsAdapter playListSongsAdapter;
+
 
     @Nullable
     @Override
