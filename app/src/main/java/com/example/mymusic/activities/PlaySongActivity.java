@@ -13,7 +13,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -21,7 +20,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +33,6 @@ import com.example.mymusic.adapters.ViewPagerPlayListSong;
 import com.example.mymusic.fragments.PlayListSongsFragment;
 import com.example.mymusic.fragments.ShowInformationSongFragment;
 import com.example.mymusic.models.Song;
-import com.example.mymusic.services.CommunicationInterface;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -59,7 +56,7 @@ public class PlaySongActivity extends AppCompatActivity {
     Runnable runnable;
     Handler handler;
     int currentItem;
-    MediaPlayer mediaPlayer;
+    public static MediaPlayer mediaPlayer;
     int position = 0;
     boolean repeat = false;
     boolean checkRandom = false;
@@ -75,32 +72,18 @@ public class PlaySongActivity extends AppCompatActivity {
         getSongsFromIntent();
         setViews();
         eventClickPlay();
-        playFromListPlay();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("INTENT_NAME"));
 
     }
 
+    //song from list play
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Song receivedSong = intent.getParcelableExtra("moveSong");
-            Log.d("BBB", receivedSong.getNameSong());
+            playFromPlayList(receivedSong);
         }
     };
-
-
-    private void playFromListPlay() {
-
-
-//        intent = getIntent();
-//        if (intent != null) {
-//            if (intent.hasExtra("songPlayLine")) {
-//                Song song = intent.getParcelableExtra("songPlayLine");
-//                Log.d("BBB", song.getNameSong() + ".........." + songArrayList.size());
-//            }
-//        }
-    }
-
 
     private void getSongsFromIntent() {
         intent = getIntent();
@@ -115,6 +98,21 @@ public class PlaySongActivity extends AppCompatActivity {
                 songArrayList = songListMoved;
             }
         }
+    }
+
+    private void playSong(Song song) {
+        new PlayMp3().execute(song.getLinkSong());
+        showInformationSongFragment.setViewsPlaySong(song.getImageSong(), song.getNameSong(), song.getSinger());
+        getSupportActionBar().setTitle(song.getNameSong());
+    }
+
+    private void playFromPlayList(Song receivedSong) {
+        imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
+        position = songArrayList.indexOf(receivedSong);
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+        playSong(songArrayList.get(position));
     }
 
     private void eventClickPlay() {
@@ -226,12 +224,7 @@ public class PlaySongActivity extends AppCompatActivity {
                         if (position > (songArrayList.size() - 1)) {
                             position = 0;
                         }
-                        new PlayMp3().execute(songArrayList.get(position).getLinkSong());
-                        showInformationSongFragment.setViewsPlaySong(
-                                songArrayList.get(position).getImageSong(),
-                                songArrayList.get(position).getNameSong(),
-                                songArrayList.get(position).getSinger());
-                        getSupportActionBar().setTitle(songArrayList.get(position).getNameSong());
+                        playSong(songArrayList.get(position));
                         updateTime();
                     }
                 }
@@ -273,12 +266,7 @@ public class PlaySongActivity extends AppCompatActivity {
                             }
                             position = index;
                         }
-                        new PlayMp3().execute(songArrayList.get(position).getLinkSong());
-                        showInformationSongFragment.setViewsPlaySong(
-                                songArrayList.get(position).getImageSong(),
-                                songArrayList.get(position).getNameSong(),
-                                songArrayList.get(position).getSinger());
-                        getSupportActionBar().setTitle(songArrayList.get(position).getNameSong());
+                        playSong(songArrayList.get(position));
                         updateTime();
                     }
                 }
@@ -315,6 +303,7 @@ public class PlaySongActivity extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.popup_download:
                                 Toast.makeText(PlaySongActivity.this, "Downloading...", Toast.LENGTH_SHORT).show();
+                                Log.d("BBB", "clicked");
                                 return true;
                             case R.id.popup_share:
                                 Toast.makeText(PlaySongActivity.this, "Share with Facebook", Toast.LENGTH_SHORT).show();
@@ -374,7 +363,6 @@ public class PlaySongActivity extends AppCompatActivity {
                 viewPagerPlay.setCurrentItem(currentItem, true);
             }
         };
-
         showInformationSongFragment = (ShowInformationSongFragment) viewPagerPlayListSong.getItem(0);
         if (songArrayList.size() > 0) {
             getSupportActionBar().setTitle(songArrayList.get(0).getNameSong());
