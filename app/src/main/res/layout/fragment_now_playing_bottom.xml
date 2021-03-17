@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".fragments.NowPlayingFragmentBottom">
+
+    <RelativeLayout
+        android:id="@+id/card_bottom_player"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/imgSongMini"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/benvang" />
+
+        <TextView
+            android:id="@+id/txtNameSongMini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="7dp"
+            android:layout_toRightOf="@+id/imgSongMini"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="Name Song"
+            android:textColor="@color/black_write"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/txtSingerMini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtNameSongMini"
+            android:layout_marginLeft="7dp"
+            android:layout_toRightOf="@+id/imgSongMini"
+            android:ellipsize="end"
+            android:maxWidth="250dp"
+            android:singleLine="true"
+            android:text="Singer"
+            android:textColor="#8c8a8a"
+            android:textSize="8sp" />
+
+        <ImageButton
+            android:id="@+id/btnPlayMini"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/next_previous_button_background"
+            android:contentDescription="@string/app_name"
+            android:padding="4dp"
+            android:src="@drawable/ic_play_arrow"
+            android:tint="@android:color/black" />
+
+        <ImageView
+            android:id="@+id/imgLikeMini"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/btnPlayMini"
+            android:src="@drawable/iconlove" />
+
+
+    </RelativeLayout>
+
+</FrameLayout>

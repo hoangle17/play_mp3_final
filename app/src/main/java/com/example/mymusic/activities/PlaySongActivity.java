@@ -1,6 +1,7 @@
 package com.example.mymusic.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
@@ -16,6 +17,7 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -63,6 +65,11 @@ public class PlaySongActivity extends AppCompatActivity {
     boolean next = false;
     Intent intent;
 
+
+    public static MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,22 +80,44 @@ public class PlaySongActivity extends AppCompatActivity {
         setViews();
         eventClickPlay();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("INTENT_NAME"));
-
     }
+
+    @Override
+    public void onBackPressed() {
+//        if (songArrayList.size() > 0) {
+//            MainActivity.getFrameLayoutPlayerMini().setVisibility(View.VISIBLE);
+//            moveSongToMinimized(songArrayList);
+//        }
+        finish();
+    }
+
+//    private void moveSongToMinimized(ArrayList<Song> songArrayList) {
+//        Intent intent = new Intent("MOVE_MINI").putExtra("moveToMini", songArrayList);
+//        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+//    }
 
     //song from list play
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Song receivedSong = intent.getParcelableExtra("moveSong");
-            playFromPlayList(receivedSong);
+            Song receiver = (Song) intent.getParcelableExtra("moveSong");
+            playFromPlayList(receiver);
         }
     };
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mReceiver);
+    }
 
     private void getSongsFromIntent() {
         intent = getIntent();
         songArrayList.clear();
         if (intent != null) {
+            if (mediaPlayer != null) {
+                PlaySongActivity.getMediaPlayer().stop();
+            }
             if (intent.hasExtra("song")) {
                 Song song = intent.getParcelableExtra("song");
                 songArrayList.add(song);
@@ -110,7 +139,7 @@ public class PlaySongActivity extends AppCompatActivity {
         imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
         position = songArrayList.indexOf(receivedSong);
         if (mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
+            mediaPlayer.stop();
         }
         playSong(songArrayList.get(position));
     }
@@ -346,8 +375,12 @@ public class PlaySongActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
-                mediaPlayer.stop();
-                songArrayList.clear();
+//                MainActivity.getFrameLayoutPlayerMini().setVisibility(View.VISIBLE);
+//                if (songArrayList.size() > 0) {
+//                    moveSongToMinimized(songArrayList);
+//                }
+//                mediaPlayer.stop();
+//                songArrayList.clear();
             }
         });
         circleIndicatorPlay.setViewPager(viewPagerPlay);

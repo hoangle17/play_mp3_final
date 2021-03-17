@@ -1,9 +1,13 @@
 package com.example.mymusic.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import com.example.mymusic.R;
 import com.example.mymusic.adapters.MainViewPagerAdapter;
@@ -12,8 +16,13 @@ import com.example.mymusic.fragments.SearchFragment;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
+    private static FrameLayout frameLayoutPlayerMini;
     TabLayout tabLayout;
     ViewPager viewPager;
+
+    public static FrameLayout getFrameLayoutPlayerMini() {
+        return frameLayoutPlayerMini;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +30,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initView();
         init();
+        frameLayoutPlayerMini.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("BBB", "clicked mini");
+            }
+        });
     }
 
     private void init() {
@@ -36,5 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         tabLayout = findViewById(R.id.myTabLayout);
         viewPager = findViewById(R.id.myViewPager);
+        frameLayoutPlayerMini = findViewById(R.id.frameMini);
+        frameLayoutPlayerMini.setVisibility(View.GONE);
     }
+
 }

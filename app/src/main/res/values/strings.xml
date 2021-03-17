@@ -15,4 +15,6 @@
     <string name="now_playing">Now playing</string>
     <string name="music_life">Music Life</string>
     <string name="_00_00">00:00</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
