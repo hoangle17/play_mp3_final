@@ -82,6 +82,7 @@ public class HotSongAdapter extends RecyclerView.Adapter<HotSongAdapter.ViewHold
                                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                             }
                         }
+
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
 
@@ -95,6 +96,7 @@ public class HotSongAdapter extends RecyclerView.Adapter<HotSongAdapter.ViewHold
                 public void onClick(View v) {
                     Intent intent = new Intent(context, PlaySongActivity.class);
                     intent.putExtra("song", songArrayList.get(getPosition()));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
             });

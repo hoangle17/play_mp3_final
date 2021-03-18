@@ -105,6 +105,7 @@ public class PlayListSongsAdapter extends RecyclerView.Adapter<PlayListSongsAdap
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent("INTENT_NAME").putExtra("moveSong", songArrayList.get(getPosition()));
+                    Log.d("BBB", songArrayList.get(getPosition()).getNameSong());
                     LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                 }
             });

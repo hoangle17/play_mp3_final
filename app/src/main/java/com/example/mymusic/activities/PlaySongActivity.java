@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
@@ -32,6 +34,7 @@ import android.widget.Toast;
 
 import com.example.mymusic.R;
 import com.example.mymusic.adapters.ViewPagerPlayListSong;
+import com.example.mymusic.fragments.NowPlayingFragmentBottom;
 import com.example.mymusic.fragments.PlayListSongsFragment;
 import com.example.mymusic.fragments.ShowInformationSongFragment;
 import com.example.mymusic.models.Song;
@@ -43,11 +46,14 @@ import java.util.Random;
 
 import me.relex.circleindicator.CircleIndicator;
 
+import static com.example.mymusic.fragments.NowPlayingFragmentBottom.imageButtonPlayMini;
+
 public class PlaySongActivity extends AppCompatActivity {
     CircleIndicator circleIndicatorPlay;
     Toolbar toolbarPlaySong;
     TextView textViewCurrentTime, textViewTotalTime;
-    ImageButton imageButtonPlay, imageButtonRepeat, imageButtonNext, imageButtonPrevious, imageButtonShuffle, imageButtonMore;
+    public static ImageButton imageButtonPlay;
+    ImageButton imageButtonRepeat, imageButtonNext, imageButtonPrevious, imageButtonShuffle, imageButtonMore;
     ViewPager viewPagerPlay;
     SeekBar seekBar;
     MenuBuilder menuBuilder;
@@ -65,7 +71,6 @@ public class PlaySongActivity extends AppCompatActivity {
     boolean next = false;
     Intent intent;
 
-
     public static MediaPlayer getMediaPlayer() {
         return mediaPlayer;
     }
@@ -80,21 +85,24 @@ public class PlaySongActivity extends AppCompatActivity {
         setViews();
         eventClickPlay();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("INTENT_NAME"));
+
     }
 
     @Override
     public void onBackPressed() {
-//        if (songArrayList.size() > 0) {
-//            MainActivity.getFrameLayoutPlayerMini().setVisibility(View.VISIBLE);
-//            moveSongToMinimized(songArrayList);
-//        }
-        finish();
+        if (songArrayList.size() > 0) {
+            MainActivity.getFrameLayoutPlayerMini().setVisibility(View.VISIBLE);
+            moveSongToMinimized(songArrayList.get(position));
+        }
+        Intent intentToMain = new Intent(this, MainActivity.class);
+        intentToMain.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(intentToMain);
     }
 
-//    private void moveSongToMinimized(ArrayList<Song> songArrayList) {
-//        Intent intent = new Intent("MOVE_MINI").putExtra("moveToMini", songArrayList);
-//        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-//    }
+    private void moveSongToMinimized(Song song) {
+        Intent intent = new Intent("MOVE_MINI").putExtra("moveToMini", song);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
 
     //song from list play
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -137,6 +145,7 @@ public class PlaySongActivity extends AppCompatActivity {
 
     private void playFromPlayList(Song receivedSong) {
         imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
+        imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
         position = songArrayList.indexOf(receivedSong);
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
@@ -168,9 +177,11 @@ public class PlaySongActivity extends AppCompatActivity {
                 if (mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
                     imageButtonPlay.setImageResource(R.drawable.ic_play_arrow);
+                    imageButtonPlayMini.setImageResource(R.drawable.ic_play_arrow);
                 } else {
                     mediaPlayer.start();
                     imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
+                    imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
                 }
             }
         });
@@ -370,17 +381,16 @@ public class PlaySongActivity extends AppCompatActivity {
         viewPagerPlayListSong.addFragment(showInformationSongFragment);
         viewPagerPlayListSong.addFragment(playListSongsFragment);
         viewPagerPlay.setAdapter(viewPagerPlayListSong);
-//        getSupportActionBar().setTitle(null);
         toolbarPlaySong.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                mediaPlayer.stop();
+                songArrayList.clear();
 //                MainActivity.getFrameLayoutPlayerMini().setVisibility(View.VISIBLE);
 //                if (songArrayList.size() > 0) {
-//                    moveSongToMinimized(songArrayList);
+//                    moveSongToMinimized(songArrayList.get(position));
 //                }
-//                mediaPlayer.stop();
-//                songArrayList.clear();
+                finish();
             }
         });
         circleIndicatorPlay.setViewPager(viewPagerPlay);

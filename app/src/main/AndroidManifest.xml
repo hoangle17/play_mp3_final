@@ -13,6 +13,8 @@
         android:theme="@style/FullScreen">
         <activity
             android:name=".activities.PlaySongActivity"
+            android:finishOnTaskLaunch="true"
+            android:launchMode="singleInstance"
             android:theme="@style/FullScreen" />
         <activity android:name=".activities.ListAlbumActivity" />
         <activity android:name=".activities.GenreFromTopicActivity" />

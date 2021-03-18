@@ -23,7 +23,7 @@
             android:id="@+id/txtNameSongMini"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="7dp"
             android:layout_toRightOf="@+id/imgSongMini"
             android:ellipsize="end"
@@ -31,21 +31,21 @@
             android:singleLine="true"
             android:text="Name Song"
             android:textColor="@color/black_write"
-            android:textSize="10sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/txtSingerMini"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtNameSongMini"
-            android:layout_marginLeft="7dp"
+            android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/imgSongMini"
             android:ellipsize="end"
             android:maxWidth="250dp"
             android:singleLine="true"
             android:text="Singer"
             android:textColor="#8c8a8a"
-            android:textSize="8sp" />
+            android:textSize="10sp" />
 
         <ImageButton
             android:id="@+id/btnPlayMini"
@@ -60,7 +60,7 @@
             android:background="@drawable/next_previous_button_background"
             android:contentDescription="@string/app_name"
             android:padding="4dp"
-            android:src="@drawable/ic_play_arrow"
+            android:src="@drawable/ic_baseline_pause_24"
             android:tint="@android:color/black" />
 
         <ImageView
