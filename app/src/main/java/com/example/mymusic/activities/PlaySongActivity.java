@@ -1,13 +1,10 @@
 package com.example.mymusic.activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
@@ -19,7 +16,6 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -33,11 +29,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mymusic.R;
+import com.example.mymusic.adapters.HotSongAdapter;
+import com.example.mymusic.adapters.ListSongsAdapter;
 import com.example.mymusic.adapters.ViewPagerPlayListSong;
 import com.example.mymusic.fragments.NowPlayingFragmentBottom;
 import com.example.mymusic.fragments.PlayListSongsFragment;
 import com.example.mymusic.fragments.ShowInformationSongFragment;
 import com.example.mymusic.models.Song;
+import com.example.mymusic.services.APIService;
+import com.example.mymusic.services.DataService;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -45,8 +46,15 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import me.relex.circleindicator.CircleIndicator;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.example.mymusic.fragments.NowPlayingFragmentBottom.imageButtonPlayMini;
+import static com.example.mymusic.fragments.NowPlayingFragmentBottom.imageViewLikeMini;
+import static com.example.mymusic.fragments.NowPlayingFragmentBottom.imageViewSongMini;
+import static com.example.mymusic.fragments.NowPlayingFragmentBottom.textViewNameSongMini;
+import static com.example.mymusic.fragments.NowPlayingFragmentBottom.textViewSingerMini;
 
 public class PlaySongActivity extends AppCompatActivity {
     CircleIndicator circleIndicatorPlay;
@@ -85,18 +93,61 @@ public class PlaySongActivity extends AppCompatActivity {
         setViews();
         eventClickPlay();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("INTENT_NAME"));
-
     }
+
 
     @Override
     public void onBackPressed() {
         if (songArrayList.size() > 0) {
             MainActivity.getFrameLayoutPlayerMini().setVisibility(View.VISIBLE);
-            moveSongToMinimized(songArrayList.get(position));
+
+            Song song = songArrayList.get(position);
+            setViewMinimize(song);
         }
-        Intent intentToMain = new Intent(this, MainActivity.class);
-        intentToMain.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(intentToMain);
+        backToPreviousActivity();
+    }
+
+    private void setViewMinimize(Song song) {
+        textViewSingerMini.setText(song.getSinger());
+        textViewNameSongMini.setText(song.getNameSong());
+        imageViewLikeMini.setImageResource(R.drawable.heart);
+        Picasso.with(NowPlayingFragmentBottom.getContextMinimize().getContext()).load(song.getImageSong()).into(imageViewSongMini);
+        imageViewLikeMini.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageViewLikeMini.setImageResource(R.drawable.heartfull);
+                DataService dataService = APIService.getService();
+                Call<String> call = dataService.updateLiked("1", song.getIdSong());
+                call.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        String result = response.body();
+                        if (result.equals("success")) {
+                            Toast.makeText(NowPlayingFragmentBottom.getContextMinimize().getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(NowPlayingFragmentBottom.getContextMinimize().getContext(), "Error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+    }
+
+    private void backToPreviousActivity() {
+        if (ListSongsAdapter.isClickItem || SongsActivity.isClickFB) {
+            Intent intentToListSong = new Intent(this, SongsActivity.class);
+            intentToListSong.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intentToListSong);
+        } else {
+            Intent intentToMain = new Intent(this, MainActivity.class);
+            intentToMain.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intentToMain);
+        }
     }
 
     private void moveSongToMinimized(Song song) {
@@ -246,6 +297,7 @@ public class PlaySongActivity extends AppCompatActivity {
                     }
                     if (position < (songArrayList.size())) {
                         imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
+                        imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
                         position++;
                         if (repeat == true) {
                             if (position == 0) {
@@ -291,6 +343,7 @@ public class PlaySongActivity extends AppCompatActivity {
                     }
                     if (position < (songArrayList.size())) {
                         imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
+                        imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
                         position--;
                         if (position < 0) {
                             position = songArrayList.size() - 1;
@@ -384,13 +437,13 @@ public class PlaySongActivity extends AppCompatActivity {
         toolbarPlaySong.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mediaPlayer.stop();
-                songArrayList.clear();
-//                MainActivity.getFrameLayoutPlayerMini().setVisibility(View.VISIBLE);
-//                if (songArrayList.size() > 0) {
-//                    moveSongToMinimized(songArrayList.get(position));
-//                }
-                finish();
+                if (songArrayList.size() > 0) {
+                    MainActivity.getFrameLayoutPlayerMini().setVisibility(View.VISIBLE);
+
+                    Song song = songArrayList.get(position);
+                    setViewMinimize(song);
+                }
+                backToPreviousActivity();
             }
         });
         circleIndicatorPlay.setViewPager(viewPagerPlay);
@@ -410,7 +463,7 @@ public class PlaySongActivity extends AppCompatActivity {
         if (songArrayList.size() > 0) {
             getSupportActionBar().setTitle(songArrayList.get(0).getNameSong());
             new PlayMp3().execute(songArrayList.get(0).getLinkSong());
-
+            imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
             imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
         }
     }
@@ -448,7 +501,75 @@ public class PlaySongActivity extends AppCompatActivity {
     }
 
     private void updateTime() {
-
+        final Handler handlerSetTimePlaying = new Handler();
+        handlerSetTimePlaying.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mediaPlayer != null) {
+                    seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
+                    textViewCurrentTime.setText(simpleDateFormat.format(mediaPlayer.getCurrentPosition()));
+                    handlerSetTimePlaying.postDelayed(this, 300);
+                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            next = true;
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }
+        }, 300);
+        final Handler handlerNextSong = new Handler();
+        handlerNextSong.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (next == true) {
+                    if (position < (songArrayList.size())) {
+                        imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
+                        imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
+                        position++;
+                        if (repeat == true) {
+                            if (position == 0) {
+                                position = songArrayList.size();
+                            }
+                            position -= 1;
+                        }
+                        if (checkRandom == true) {
+                            Random random = new Random();
+                            int index = random.nextInt(songArrayList.size());
+                            if (index == position) {
+                                position = index - 1;
+                            }
+                            position = index;
+                        }
+                        if (position > (songArrayList.size() - 1)) {
+                            position = 0;
+                        }
+                        playSong(songArrayList.get(position));
+                        updateTime();
+                    }
+                    imageButtonPrevious.setClickable(false);
+                    imageButtonNext.setClickable(false);
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            imageButtonPrevious.setClickable(true);
+                            imageButtonNext.setClickable(true);
+                        }
+                    }, 5000);
+                    next = false;
+                    handler1.removeCallbacks(this, 1000);
+                } else {
+                    handlerNextSong.postDelayed(this, 1000);
+                }
+            }
+        }, 1000);
     }
 
     private void timeSong() {

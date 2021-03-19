@@ -29,6 +29,7 @@ public class HotSongAdapter extends RecyclerView.Adapter<HotSongAdapter.ViewHold
     Context context;
     ArrayList<Song> songArrayList;
 
+
     public HotSongAdapter(Context context, ArrayList<Song> songArrayList) {
         this.context = context;
         this.songArrayList = songArrayList;

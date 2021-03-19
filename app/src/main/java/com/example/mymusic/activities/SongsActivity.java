@@ -6,6 +6,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -53,6 +54,7 @@ public class SongsActivity extends AppCompatActivity {
     Playlist playlist;
     Genre genre;
     Album album;
+    public static boolean isClickFB = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,6 +228,7 @@ public class SongsActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isClickFB = true;
                 Intent intent = new Intent(SongsActivity.this, PlaySongActivity.class);
                 intent.putExtra("songs", songArrayList);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -1,16 +1,16 @@
 package com.example.mymusic.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.example.mymusic.R;
+import com.example.mymusic.adapters.HotSongAdapter;
+import com.example.mymusic.adapters.ListSongsAdapter;
 import com.example.mymusic.adapters.MainViewPagerAdapter;
 import com.example.mymusic.fragments.HomePageFragment;
 import com.example.mymusic.fragments.SearchFragment;
@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, PlaySongActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
+                SongsActivity.isClickFB = false;
+                ListSongsAdapter.isClickItem = false;
             }
         });
     }
