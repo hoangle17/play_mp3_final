@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgSongResult"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="3dp"
+        android:scaleType="fitXY" />
+
+    <TextView
+        android:id="@+id/txtNameSongResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_toRightOf="@+id/imgSongResult"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/black_write"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/txtSingerSongResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtNameSongResult"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/imgSongResult"
+        android:singleLine="true"
+        android:textColor="#8c8a8a"
+        android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/imgLike"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/heart" />
+</RelativeLayout>
