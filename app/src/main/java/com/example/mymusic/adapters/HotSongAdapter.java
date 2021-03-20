@@ -78,7 +78,7 @@ public class HotSongAdapter extends RecyclerView.Adapter<HotSongAdapter.ViewHold
                             String result = response.body();
                             if (result.equals("success")) {
                                 Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
-//                                imageViewLike.setImageResource(R.drawable.heart);
+                                imageViewLike.setEnabled(false);
                             } else {
                                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                             }

@@ -4,13 +4,12 @@
     android:layout_height="match_parent">
 
     <View
+        android:layout_centerHorizontal="true"
         android:id="@+id/viewIconSearch"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_below="@+id/ablSearchSong"
-        android:layout_marginStart="155dp"
         android:layout_marginTop="70dp"
-        android:layout_marginEnd="155dp"
         android:background="@drawable/search_background"
         android:backgroundTint="#BFC9CA" />
 

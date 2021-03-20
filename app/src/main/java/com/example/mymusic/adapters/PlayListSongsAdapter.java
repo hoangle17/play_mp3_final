@@ -89,6 +89,7 @@ public class PlayListSongsAdapter extends RecyclerView.Adapter<PlayListSongsAdap
                             String result = response.body();
                             if (result.equals("success")) {
                                 Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
+                                imageViewLike.setEnabled(false);
                             } else {
                                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                             }

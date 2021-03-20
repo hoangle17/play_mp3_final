@@ -3,6 +3,8 @@
     package="com.example.mymusic">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -11,17 +13,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/FullScreen">
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
         <activity
             android:name=".activities.PlaySongActivity"
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:theme="@style/FullScreen" />
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.FacebookContentProvider734170097243733"
+            android:exported="true" />
+
         <activity android:name=".activities.ListAlbumActivity" />
         <activity android:name=".activities.GenreFromTopicActivity" />
         <activity android:name=".activities.ListTopicActivity" />
         <activity android:name=".activities.ListPlaylistActivity" />
         <activity android:name=".activities.SongsActivity" />
-        <activity android:name=".activities.MainActivity">
+        <activity
+            android:name=".activities.MainActivity"
+            android:usesCleartextTraffic="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

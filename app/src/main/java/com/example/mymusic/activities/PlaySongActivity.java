@@ -8,17 +8,26 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,9 +47,16 @@ import com.example.mymusic.fragments.ShowInformationSongFragment;
 import com.example.mymusic.models.Song;
 import com.example.mymusic.services.APIService;
 import com.example.mymusic.services.DataService;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Random;
@@ -57,6 +73,7 @@ import static com.example.mymusic.fragments.NowPlayingFragmentBottom.textViewNam
 import static com.example.mymusic.fragments.NowPlayingFragmentBottom.textViewSingerMini;
 
 public class PlaySongActivity extends AppCompatActivity {
+    private static final int PERMISSION_STORAGE_CODE = 1000;
     CircleIndicator circleIndicatorPlay;
     Toolbar toolbarPlaySong;
     TextView textViewCurrentTime, textViewTotalTime;
@@ -78,6 +95,8 @@ public class PlaySongActivity extends AppCompatActivity {
     boolean checkRandom = false;
     boolean next = false;
     Intent intent;
+    CallbackManager callbackManager;
+    ShareDialog shareDialog;
 
     public static MediaPlayer getMediaPlayer() {
         return mediaPlayer;
@@ -93,6 +112,8 @@ public class PlaySongActivity extends AppCompatActivity {
         setViews();
         eventClickPlay();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("INTENT_NAME"));
+
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
     }
 
 
@@ -107,10 +128,37 @@ public class PlaySongActivity extends AppCompatActivity {
         backToPreviousActivity();
     }
 
+    private void startDownloading(Song song) {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(song.getLinkSong()));
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+        request.setTitle(song.getNameSong());
+        request.setDescription("Download file ...");
+        request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, song.getNameSong() + ".mp3");
+        Log.i("download", Environment.getExternalStorageState());
+        DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        manager.enqueue(request);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_STORAGE_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startDownloading(songArrayList.get(position));
+                } else {
+                    Toast.makeText(getApplicationContext(), "Permission Denied!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
     private void setViewMinimize(Song song) {
         textViewSingerMini.setText(song.getSinger());
         textViewNameSongMini.setText(song.getNameSong());
         imageViewLikeMini.setImageResource(R.drawable.heart);
+        imageViewLikeMini.setEnabled(true);
         Picasso.with(NowPlayingFragmentBottom.getContextMinimize().getContext()).load(song.getImageSong()).into(imageViewSongMini);
         imageViewLikeMini.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +172,7 @@ public class PlaySongActivity extends AppCompatActivity {
                         String result = response.body();
                         if (result.equals("success")) {
                             Toast.makeText(NowPlayingFragmentBottom.getContextMinimize().getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                            imageViewLikeMini.setEnabled(false);
                         } else {
                             Toast.makeText(NowPlayingFragmentBottom.getContextMinimize().getContext(), "Error", Toast.LENGTH_SHORT).show();
                         }
@@ -150,10 +199,6 @@ public class PlaySongActivity extends AppCompatActivity {
         }
     }
 
-    private void moveSongToMinimized(Song song) {
-        Intent intent = new Intent("MOVE_MINI").putExtra("moveToMini", song);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-    }
 
     //song from list play
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -163,6 +208,16 @@ public class PlaySongActivity extends AppCompatActivity {
             playFromPlayList(receiver);
         }
     };
+
+    private void playFromPlayList(Song receivedSong) {
+        imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
+        imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
+        position = songArrayList.indexOf(receivedSong);
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
+        playSong(songArrayList.get(position));
+    }
 
     @Override
     public void onStop() {
@@ -194,15 +249,6 @@ public class PlaySongActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(song.getNameSong());
     }
 
-    private void playFromPlayList(Song receivedSong) {
-        imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
-        imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
-        position = songArrayList.indexOf(receivedSong);
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
-        }
-        playSong(songArrayList.get(position));
-    }
 
     private void eventClickPlay() {
         final Handler handler = new Handler();
@@ -396,10 +442,31 @@ public class PlaySongActivity extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.popup_download:
                                 Toast.makeText(PlaySongActivity.this, "Downloading...", Toast.LENGTH_SHORT).show();
-                                Log.d("BBB", "clicked");
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                                        String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                                        requestPermissions(permissions, PERMISSION_STORAGE_CODE);
+
+                                    } else {
+                                        startDownloading(songArrayList.get(position));
+                                    }
+                                } else {
+                                    startDownloading(songArrayList.get(position));
+                                }
                                 return true;
                             case R.id.popup_share:
-                                Toast.makeText(PlaySongActivity.this, "Share with Facebook", Toast.LENGTH_SHORT).show();
+//                                LoginManager.getInstance().logOut();
+                                callbackManager = CallbackManager.Factory.create();
+                                shareDialog = new ShareDialog(PlaySongActivity.this);
+                                ShareLinkContent linkContent = new ShareLinkContent.Builder().setQuote("Music")
+                                        .setContentUrl(Uri.parse(songArrayList.get(position).getImageSong()))
+                                        .build();
+                                if (shareDialog.canShow(ShareLinkContent.class)) {
+                                    Toast.makeText(PlaySongActivity.this, "Share with Facebook", Toast.LENGTH_SHORT).show();
+                                    shareDialog.show(linkContent);
+                                }
+                                Toast.makeText(PlaySongActivity.this, "Shared", Toast.LENGTH_SHORT).show();
                                 return true;
                             default:
                                 return false;
@@ -550,7 +617,9 @@ public class PlaySongActivity extends AppCompatActivity {
                         if (position > (songArrayList.size() - 1)) {
                             position = 0;
                         }
-                        playSong(songArrayList.get(position));
+                        Song song = songArrayList.get(position);
+                        playSong(song);
+                        setViewMinimize(song);
                         updateTime();
                     }
                     imageButtonPrevious.setClickable(false);
