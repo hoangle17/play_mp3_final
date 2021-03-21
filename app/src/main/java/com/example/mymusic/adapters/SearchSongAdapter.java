@@ -28,6 +28,7 @@ import retrofit2.Response;
 public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.ViewHolder> {
     ArrayList<Song> songArrayList;
     Context context;
+    public static boolean isClickedItemSearch = false;
 
     public SearchSongAdapter(ArrayList<Song> songArrayList, Context context) {
         this.songArrayList = songArrayList;
@@ -94,6 +95,8 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    isClickedItemSearch = true;
+
                     Intent intent = new Intent(context, PlaySongActivity.class);
                     intent.putExtra("song", songArrayList.get(getPosition()));
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

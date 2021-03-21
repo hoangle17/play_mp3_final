@@ -37,10 +37,17 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.mymusic.R;
 import com.example.mymusic.adapters.HotSongAdapter;
 import com.example.mymusic.adapters.ListSongsAdapter;
+import com.example.mymusic.adapters.SearchSongAdapter;
 import com.example.mymusic.adapters.ViewPagerPlayListSong;
+import com.example.mymusic.fragments.LyricsFragment;
 import com.example.mymusic.fragments.NowPlayingFragmentBottom;
 import com.example.mymusic.fragments.PlayListSongsFragment;
 import com.example.mymusic.fragments.ShowInformationSongFragment;
@@ -53,6 +60,8 @@ import com.facebook.login.LoginManager;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -86,6 +95,7 @@ public class PlaySongActivity extends AppCompatActivity {
     public static ViewPagerPlayListSong viewPagerPlayListSong;
     ShowInformationSongFragment showInformationSongFragment;
     PlayListSongsFragment playListSongsFragment;
+    LyricsFragment lyricsFragment;
     Runnable runnable;
     Handler handler;
     int currentItem;
@@ -188,14 +198,16 @@ public class PlaySongActivity extends AppCompatActivity {
     }
 
     private void backToPreviousActivity() {
-        if (ListSongsAdapter.isClickItem || SongsActivity.isClickFB) {
-            Intent intentToListSong = new Intent(this, SongsActivity.class);
-            intentToListSong.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(intentToListSong);
-        } else {
+        if (SearchSongAdapter.isClickedItemSearch || HotSongAdapter.isClickedHotSong) {
             Intent intentToMain = new Intent(this, MainActivity.class);
             intentToMain.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intentToMain);
+            ListSongsAdapter.isClickItem = false;
+            SongsActivity.isClickFB = false;
+        } else {
+            Intent intentToListSong = new Intent(this, SongsActivity.class);
+            intentToListSong.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intentToListSong);
         }
     }
 
@@ -243,9 +255,11 @@ public class PlaySongActivity extends AppCompatActivity {
         }
     }
 
+
     private void playSong(Song song) {
         new PlayMp3().execute(song.getLinkSong());
         showInformationSongFragment.setViewsPlaySong(song.getImageSong(), song.getNameSong(), song.getSinger());
+        lyricsFragment.setLyricSong(song);
         getSupportActionBar().setTitle(song.getNameSong());
     }
 
@@ -255,8 +269,9 @@ public class PlaySongActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (viewPagerPlayListSong.getItem(0) != null) {
+                if (viewPagerPlayListSong.getItem(1) != null) {
                     if (songArrayList.size() > 0) {
+                        lyricsFragment.setLyricSong(songArrayList.get(0));
                         showInformationSongFragment.setViewsPlaySong(
                                 songArrayList.get(0).getImageSong(),
                                 songArrayList.get(0).getNameSong(),
@@ -495,12 +510,16 @@ public class PlaySongActivity extends AppCompatActivity {
         setSupportActionBar(toolbarPlaySong);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        lyricsFragment = new LyricsFragment();
         playListSongsFragment = new PlayListSongsFragment();
         showInformationSongFragment = new ShowInformationSongFragment();
         viewPagerPlayListSong = new ViewPagerPlayListSong(getSupportFragmentManager());
+        viewPagerPlayListSong.addFragment(lyricsFragment);
         viewPagerPlayListSong.addFragment(showInformationSongFragment);
         viewPagerPlayListSong.addFragment(playListSongsFragment);
         viewPagerPlay.setAdapter(viewPagerPlayListSong);
+        viewPagerPlay.setOffscreenPageLimit(3); //keep state fragment not reload
+        viewPagerPlay.setCurrentItem(1);
         toolbarPlaySong.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -526,7 +545,7 @@ public class PlaySongActivity extends AppCompatActivity {
                 viewPagerPlay.setCurrentItem(currentItem, true);
             }
         };
-        showInformationSongFragment = (ShowInformationSongFragment) viewPagerPlayListSong.getItem(0);
+        showInformationSongFragment = (ShowInformationSongFragment) viewPagerPlayListSong.getItem(1);
         if (songArrayList.size() > 0) {
             getSupportActionBar().setTitle(songArrayList.get(0).getNameSong());
             new PlayMp3().execute(songArrayList.get(0).getLinkSong());

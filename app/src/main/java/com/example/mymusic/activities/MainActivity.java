@@ -23,6 +23,7 @@ import com.example.mymusic.R;
 import com.example.mymusic.adapters.HotSongAdapter;
 import com.example.mymusic.adapters.ListSongsAdapter;
 import com.example.mymusic.adapters.MainViewPagerAdapter;
+import com.example.mymusic.adapters.SearchSongAdapter;
 import com.example.mymusic.fragments.HomePageFragment;
 import com.example.mymusic.fragments.SearchFragment;
 import com.example.mymusic.fragments.YoutubeFragment;
@@ -57,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, PlaySongActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
+
+                HotSongAdapter.isClickedHotSong = true;
+                SearchSongAdapter.isClickedItemSearch = true;
                 SongsActivity.isClickFB = false;
                 ListSongsAdapter.isClickItem = false;
             }

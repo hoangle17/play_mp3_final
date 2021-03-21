@@ -97,6 +97,9 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.View
                 @Override
                 public void onClick(View v) {
                     isClickItem = true;
+                    SearchSongAdapter.isClickedItemSearch = false;
+                    HotSongAdapter.isClickedHotSong = false;
+
                     Intent intent = new Intent(context, PlaySongActivity.class);
                     intent.putExtra("song", songArrayList.get(getPosition()));
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -28,7 +28,7 @@ import retrofit2.Response;
 public class HotSongAdapter extends RecyclerView.Adapter<HotSongAdapter.ViewHolder> {
     Context context;
     ArrayList<Song> songArrayList;
-
+    public static boolean isClickedHotSong = false;
 
     public HotSongAdapter(Context context, ArrayList<Song> songArrayList) {
         this.context = context;
@@ -95,6 +95,8 @@ public class HotSongAdapter extends RecyclerView.Adapter<HotSongAdapter.ViewHold
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    isClickedHotSong = true;
+
                     Intent intent = new Intent(context, PlaySongActivity.class);
                     intent.putExtra("song", songArrayList.get(getPosition()));
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

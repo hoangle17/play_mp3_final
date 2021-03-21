@@ -19,7 +19,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.mymusic.R;
+import com.example.mymusic.adapters.HotSongAdapter;
 import com.example.mymusic.adapters.ListSongsAdapter;
+import com.example.mymusic.adapters.SearchSongAdapter;
 import com.example.mymusic.models.Advertise;
 import com.example.mymusic.models.Album;
 import com.example.mymusic.models.Genre;
@@ -228,7 +230,10 @@ public class SongsActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SearchSongAdapter.isClickedItemSearch = false;
+                HotSongAdapter.isClickedHotSong = false;
                 isClickFB = true;
+
                 Intent intent = new Intent(SongsActivity.this, PlaySongActivity.class);
                 intent.putExtra("songs", songArrayList);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             android:gravity="center"
-            android:text="@string/lyrics"
             android:textAllCaps="true"
             android:textColor="@color/colorPrimaryText"
             android:textSize="15dp"
