@@ -39,4 +39,10 @@
     <string name="facebook_app_id2">469435510525416</string>
     <string name="facebook_login_protocol_scheme2">fb469435510525416</string>
     <string name="lyric">Lyric:</string>
+    <string name="weather">Weather</string>
+    <string name="favorite">Favorite</string>
+    <string name="phone">Phone</string>
+    <string name="covid_19">Covid-19</string>
+    <string name="music_from_the_device">Music from the device</string>
+
 </resources>

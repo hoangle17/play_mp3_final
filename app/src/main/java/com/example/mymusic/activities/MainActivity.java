@@ -25,6 +25,7 @@ import com.example.mymusic.adapters.ListSongsAdapter;
 import com.example.mymusic.adapters.MainViewPagerAdapter;
 import com.example.mymusic.adapters.SearchSongAdapter;
 import com.example.mymusic.fragments.HomePageFragment;
+import com.example.mymusic.fragments.PersonalFragment;
 import com.example.mymusic.fragments.SearchFragment;
 import com.example.mymusic.fragments.YoutubeFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -73,16 +74,20 @@ public class MainActivity extends AppCompatActivity {
         Fragment homePageFragment = new HomePageFragment();
         Fragment searchFragment = new SearchFragment();
         Fragment youtubeFragment = new YoutubeFragment();
+        Fragment personalFragment = new PersonalFragment();
+
 
         mainViewPagerAdapter.addFragment(homePageFragment, "Home");
         mainViewPagerAdapter.addFragment(searchFragment, "Search");
         mainViewPagerAdapter.addFragment(youtubeFragment, "Youtube");
+        mainViewPagerAdapter.addFragment(personalFragment, "Personal");
         viewPager.setAdapter(mainViewPagerAdapter);
-        viewPager.setOffscreenPageLimit(3); //keep state fragment not reload
+        viewPager.setOffscreenPageLimit(4); //keep state fragment not reload
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.home);
         tabLayout.getTabAt(1).setIcon(R.drawable.search);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_ondemand_video_24);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_baseline_person_24);
     }
 
     private void initView() {

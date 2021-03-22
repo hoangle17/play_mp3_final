@@ -13,6 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/FullScreen">
+        <activity android:name=".activities.PlayFromDeviceActivity" />
+        <activity android:name=".activities.MusicDeviceActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -23,6 +25,7 @@
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:theme="@style/FullScreen" />
+
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.FacebookContentProvider734170097243733"

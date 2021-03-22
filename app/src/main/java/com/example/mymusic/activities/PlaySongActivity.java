@@ -141,14 +141,33 @@ public class PlaySongActivity extends AppCompatActivity {
     private void startDownloading(Song song) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(song.getLinkSong()));
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-        request.setTitle(song.getNameSong());
+        request.setTitle(convert(song.getNameSong()));
         request.setDescription("Download file ...");
         request.allowScanningByMediaScanner();
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, song.getNameSong() + ".mp3");
-        Log.i("download", Environment.getExternalStorageState());
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, convert(song.getNameSong()) + ".mp3");
         DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         manager.enqueue(request);
+    }
+
+    public static String convert(String str) {
+        str = str.replaceAll("à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ", "a");
+        str = str.replaceAll("è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ", "e");
+        str = str.replaceAll("ì|í|ị|ỉ|ĩ", "i");
+        str = str.replaceAll("ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ", "o");
+        str = str.replaceAll("ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ", "u");
+        str = str.replaceAll("ỳ|ý|ỵ|ỷ|ỹ", "y");
+        str = str.replaceAll("đ", "d");
+
+        str = str.replaceAll("À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ", "A");
+        str = str.replaceAll("È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ", "E");
+        str = str.replaceAll("Ì|Í|Ị|Ỉ|Ĩ", "I");
+        str = str.replaceAll("Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ", "O");
+        str = str.replaceAll("Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ", "U");
+        str = str.replaceAll("Ỳ|Ý|Ỵ|Ỷ|Ỹ", "Y");
+        str = str.replaceAll("Đ", "D");
+        str = str.replaceAll("\\s+", "-");
+        return str;
     }
 
     @Override
@@ -255,14 +274,12 @@ public class PlaySongActivity extends AppCompatActivity {
         }
     }
 
-
     private void playSong(Song song) {
         new PlayMp3().execute(song.getLinkSong());
         showInformationSongFragment.setViewsPlaySong(song.getImageSong(), song.getNameSong(), song.getSinger());
         lyricsFragment.setLyricSong(song);
         getSupportActionBar().setTitle(song.getNameSong());
     }
-
 
     private void eventClickPlay() {
         final Handler handler = new Handler();
@@ -471,7 +488,6 @@ public class PlaySongActivity extends AppCompatActivity {
                                 }
                                 return true;
                             case R.id.popup_share:
-//                                LoginManager.getInstance().logOut();
                                 callbackManager = CallbackManager.Factory.create();
                                 shareDialog = new ShareDialog(PlaySongActivity.this);
                                 ShareLinkContent linkContent = new ShareLinkContent.Builder().setQuote("Music")
