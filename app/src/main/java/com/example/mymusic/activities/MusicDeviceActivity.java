@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.mymusic.R;
+import com.example.mymusic.fragments.NowPlayingFragmentBottom;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -35,6 +36,12 @@ public class MusicDeviceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_device);
         setViews();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
     private void setViews() {
@@ -79,13 +86,13 @@ public class MusicDeviceActivity extends AppCompatActivity {
         ArrayAdapter<String> adp = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         listView.setAdapter(adp);
 
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 if (PlaySongActivity.getMediaPlayer() != null) {
                     PlaySongActivity.getMediaPlayer().pause();
-                    imageButtonPlayMini.setImageResource(R.drawable.ic_play_arrow);
+                    NowPlayingFragmentBottom.imageButtonPlayMini.setImageResource(R.drawable.ic_play_arrow);
+                    PlaySongActivity.imageButtonPlay.setImageResource(R.drawable.ic_play_arrow);
                 }
                 String songName = listView.getItemAtPosition(position).toString();
                 startActivity(new Intent(getApplicationContext(), PlayFromDeviceActivity.class)

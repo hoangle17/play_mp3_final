@@ -44,5 +44,13 @@
     <string name="phone">Phone</string>
     <string name="covid_19">Covid-19</string>
     <string name="music_from_the_device">Music from the device</string>
+    <string name="recovered">Recovered</string>
+    <string name="new_death">New Death</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="death">Death</string>
+    <string name="viet_nam">Viet Nam</string>
+    <string name="global">Global</string>
+    <string name="spread_of_virus">Spread of virus</string>
+    <string name="see_all">See All</string>
 
 </resources>

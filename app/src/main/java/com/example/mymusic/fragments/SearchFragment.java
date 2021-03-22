@@ -51,7 +51,7 @@ public class SearchFragment extends Fragment {
         textViewBeLow = view.findViewById(R.id.txtBelow);
         viewIcon = view.findViewById(R.id.viewIconSearch);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setTitle("");
+        toolbar.setTitle(null);
         setHasOptionsMenu(true);
         return view;
     }

@@ -64,7 +64,7 @@ public class PlayFromDeviceActivity extends AppCompatActivity {
                 int currentPosition = 0;
                 while (currentPosition < totalDuration) {
                     try {
-                        sleep(500);
+                        sleep(1000);
                         currentPosition = mp.getCurrentPosition();
                         seekBar.setProgress(currentPosition);
                     } catch (InterruptedException e) {
@@ -80,22 +80,15 @@ public class PlayFromDeviceActivity extends AppCompatActivity {
         }
         Intent i = getIntent();
         Bundle b = i.getExtras();
-
-
         mySongs = (ArrayList) b.getParcelableArrayList("songs");
-
         name = mySongs.get(position).getName().toString();
-
         String SongName = i.getStringExtra("songname");
         textViewSongName.setText(SongName);
         textViewSongName.setSelected(true);
 
-
         position = b.getInt("pos", 0);
         Uri u = Uri.parse(mySongs.get(position).toString());
-
         mp = MediaPlayer.create(getApplicationContext(), u);
-
         mp.start();
         seekBar.setMax(mp.getDuration());
         updateSeekBar.start();
@@ -151,10 +144,8 @@ public class PlayFromDeviceActivity extends AppCompatActivity {
                 Uri u = Uri.parse(mySongs.get(position).toString());
                 // songNameText.setText(getSongName);
                 mp = MediaPlayer.create(getApplicationContext(), u);
-
                 name = mySongs.get(position).getName().toString();
                 textViewSongName.setText(name);
-
                 try {
                     mp.start();
                 } catch (Exception e) {
@@ -169,9 +160,7 @@ public class PlayFromDeviceActivity extends AppCompatActivity {
                 //songNameText.setText(getSongName);
                 mp.stop();
                 mp.release();
-
                 position = ((position - 1) < 0) ? (mySongs.size() - 1) : (position - 1);
-
                 Uri u = Uri.parse(mySongs.get(position).toString());
                 mp = MediaPlayer.create(getApplicationContext(), u);
                 name = mySongs.get(position).getName().toString();
@@ -184,7 +173,6 @@ public class PlayFromDeviceActivity extends AppCompatActivity {
         timeSong();
         updateTime();
     }
-
 
     private void timeSong() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
@@ -229,17 +217,12 @@ public class PlayFromDeviceActivity extends AppCompatActivity {
                             position = 0;
                         }
                     }
-
                     name = mySongs.get(position).getName().toString();
                     textViewSongName.setText(name);
                     imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
-
                     Uri u = Uri.parse(mySongs.get(position).toString());
-
                     mp = MediaPlayer.create(getApplicationContext(), u);
-
                     mp.start();
-
                     timeSong();
 
                     Handler handler1 = new Handler();
@@ -264,6 +247,7 @@ public class PlayFromDeviceActivity extends AppCompatActivity {
         super.onBackPressed();
         mp.stop();
         mySongs.clear();
+        finish();
     }
 
     private void setViews() {

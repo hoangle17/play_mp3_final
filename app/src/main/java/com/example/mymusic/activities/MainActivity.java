@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         mainViewPagerAdapter.addFragment(homePageFragment, "Home");
         mainViewPagerAdapter.addFragment(searchFragment, "Search");
-        mainViewPagerAdapter.addFragment(youtubeFragment, "Youtube");
+        mainViewPagerAdapter.addFragment(youtubeFragment, "MV");
         mainViewPagerAdapter.addFragment(personalFragment, "Personal");
         viewPager.setAdapter(mainViewPagerAdapter);
         viewPager.setOffscreenPageLimit(4); //keep state fragment not reload

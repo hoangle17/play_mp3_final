@@ -497,7 +497,6 @@ public class PlaySongActivity extends AppCompatActivity {
                                     Toast.makeText(PlaySongActivity.this, "Share with Facebook", Toast.LENGTH_SHORT).show();
                                     shareDialog.show(linkContent);
                                 }
-                                Toast.makeText(PlaySongActivity.this, "Shared", Toast.LENGTH_SHORT).show();
                                 return true;
                             default:
                                 return false;

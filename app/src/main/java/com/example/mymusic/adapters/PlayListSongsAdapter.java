@@ -2,8 +2,6 @@ package com.example.mymusic.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,17 +11,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymusic.R;
-import com.example.mymusic.activities.PlaySongActivity;
-import com.example.mymusic.fragments.PlayListSongsFragment;
-import com.example.mymusic.fragments.ShowInformationSongFragment;
 import com.example.mymusic.models.Song;
 import com.example.mymusic.services.APIService;
-import com.example.mymusic.services.CommunicationInterface;
 import com.example.mymusic.services.DataService;
 import com.squareup.picasso.Picasso;
 
