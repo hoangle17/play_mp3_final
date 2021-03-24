@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/FullScreen">
-        <activity android:name=".activities.CoronaActivity"></activity>
+        <activity android:name=".activities.SignUpActivity"></activity>
+        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.CoronaActivity" />
         <activity android:name=".activities.WeatherActivity" />
         <activity android:name=".activities.PlayFromDeviceActivity" />
         <activity android:name=".activities.MusicDeviceActivity" />

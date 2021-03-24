@@ -64,8 +64,11 @@ public class CoronaActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
 
         buttonGlobal.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+                buttonVN.setBackgroundResource(R.drawable.statistic_button);
+                buttonGlobal.setBackgroundResource(R.drawable.spinner_bg);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(URL, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -96,6 +99,8 @@ public class CoronaActivity extends AppCompatActivity {
         buttonVN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                buttonVN.setBackgroundResource(R.drawable.spinner_bg);
+                buttonGlobal.setBackgroundResource(R.drawable.statistic_button);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(URL, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

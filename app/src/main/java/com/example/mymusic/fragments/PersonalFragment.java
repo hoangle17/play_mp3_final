@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.mymusic.R;
 import com.example.mymusic.activities.CoronaActivity;
+import com.example.mymusic.activities.LoginActivity;
 import com.example.mymusic.activities.MusicDeviceActivity;
 import com.example.mymusic.activities.WeatherActivity;
 
@@ -52,6 +53,13 @@ public class PersonalFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CoronaActivity.class);
+                startActivity(intent);
+            }
+        });
+        imageButtonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
             }
         });

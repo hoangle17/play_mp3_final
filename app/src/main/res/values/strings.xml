@@ -52,5 +52,11 @@
     <string name="global">Global</string>
     <string name="spread_of_virus">Spread of virus</string>
     <string name="see_all">See All</string>
+    <string name="sign_up">Sign up</string>
+    <string name="email">Email</string>
+    <string name="name">Name</string>
+    <string name="sign_in">Sign in</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="username">Username</string>
 
 </resources>

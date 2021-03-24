@@ -214,7 +214,7 @@
         android:background="@drawable/statistic_button"
         android:text="@string/global"
         android:textAllCaps="false"
-        android:textColor="#FFFFFF"
+        android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="@+id/btnVN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

@@ -7,6 +7,7 @@ import com.example.mymusic.models.Playlist;
 import com.example.mymusic.models.Song;
 import com.example.mymusic.models.Topic;
 import com.example.mymusic.models.TopicAndGenre;
+import com.example.mymusic.models.User;
 
 import java.util.List;
 
@@ -68,4 +69,12 @@ public interface DataService {
     @FormUrlEncoded
     @POST("search.php")
     Call<List<Song>> getSearch(@Field("keySearch") String keySearch);
+
+    @FormUrlEncoded
+    @POST("insertuser.php")
+    Call<String> createUser(@Field("username") String username, @Field("password") String password, @Field("name") String name);
+
+    @FormUrlEncoded
+    @POST("login.php")
+    Call<User> login(@Field("username") String username, @Field("password") String password);
 }
