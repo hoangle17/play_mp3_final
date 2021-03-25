@@ -540,7 +540,6 @@ public class PlaySongActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (songArrayList.size() > 0) {
                     MainActivity.getFrameLayoutPlayerMini().setVisibility(View.VISIBLE);
-
                     Song song = songArrayList.get(position);
                     setViewMinimize(song);
                 }

@@ -28,7 +28,6 @@ public class LoginActivity extends AppCompatActivity {
     FloatingActionButton buttonLogin;
     EditText editTextUsername, editTextPass;
     TextView textViewSignIn;
-    boolean logged = false;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -55,11 +54,12 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(Call<User> call, Response<User> response) {
                         User user = response.body();
                         if (user != null) {
-                            Log.d("BBB", "Successfully");
-                            Toast.makeText(LoginActivity.this, "Logged, Successfully!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Login successfully!", Toast.LENGTH_SHORT).show();
 
-//                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                            startActivity(intent);
+                            Intent intent = new Intent(LoginActivity.this.getApplicationContext(), MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                            intent.putExtra("user", user);
+                            startActivity(intent);
                         }
                     }
 

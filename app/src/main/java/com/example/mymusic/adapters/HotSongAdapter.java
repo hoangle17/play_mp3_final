@@ -25,6 +25,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.mymusic.activities.MainActivity.getUser;
+
 public class HotSongAdapter extends RecyclerView.Adapter<HotSongAdapter.ViewHolder> {
     Context context;
     ArrayList<Song> songArrayList;
@@ -70,6 +72,7 @@ public class HotSongAdapter extends RecyclerView.Adapter<HotSongAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     imageViewLike.setImageResource(R.drawable.heartfull);
+                    //sum liked
                     DataService dataService = APIService.getService();
                     Call<String> call = dataService.updateLiked("1", songArrayList.get(getPosition()).getIdSong());
                     call.enqueue(new Callback<String>() {
@@ -89,6 +92,25 @@ public class HotSongAdapter extends RecyclerView.Adapter<HotSongAdapter.ViewHold
 
                         }
                     });
+                    //like from user
+                    if (getUser() != null) {
+                        DataService dataService1 = APIService.getService();
+                        Call<String> call1 = dataService1.favorite(songArrayList.get(getPosition()).getIdSong(), getUser().getIdUser());
+                        call1.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                String result = response.body();
+                                if (result.equals("success")) {
+                                    Toast.makeText(context, "Added to favorite song", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+
+                            }
+                        });
+                    }
                 }
             });
 

@@ -57,6 +57,7 @@ public class SongsActivity extends AppCompatActivity {
     Genre genre;
     Album album;
     public static boolean isClickFB = false;
+    boolean isRetrieveFavoriteSongs = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,30 @@ public class SongsActivity extends AppCompatActivity {
             setValueInView(album.getNameAlbum(), album.getImageAlbum());
             getDataAlbum(album.getIdAlbum());
         }
+        if (isRetrieveFavoriteSongs) {
+            setValueInView("Your favorite song", "https://tenebrous-segments.000webhostapp.com/Image/favorite.jpg");
+            getFavoriteSong(MainActivity.getUser().getIdUser());
+        }
+    }
+
+    private void getFavoriteSong(String idUser) {
+        DataService dataService = APIService.getService();
+        Call<List<Song>> call = dataService.getFavoriteSongs(idUser);
+        call.enqueue(new Callback<List<Song>>() {
+            @Override
+            public void onResponse(Call<List<Song>> call, Response<List<Song>> response) {
+                songArrayList = (ArrayList<Song>) response.body();
+                listSongsAdapter = new ListSongsAdapter(SongsActivity.this, songArrayList);
+                recyclerViewListSong.setLayoutManager(new LinearLayoutManager(SongsActivity.this));
+                recyclerViewListSong.setAdapter(listSongsAdapter);
+                eventClickListSongs();
+            }
+
+            @Override
+            public void onFailure(Call<List<Song>> call, Throwable t) {
+
+            }
+        });
     }
 
     private void getDataAlbum(String idAlbum) {
@@ -221,6 +246,9 @@ public class SongsActivity extends AppCompatActivity {
             }
             if (intent.hasExtra("album")) {
                 album = (Album) intent.getSerializableExtra("album");
+            }
+            if (intent.hasExtra("favorite_song")) {
+                isRetrieveFavoriteSongs = true;
             }
         }
     }

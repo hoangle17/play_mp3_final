@@ -77,4 +77,12 @@ public interface DataService {
     @FormUrlEncoded
     @POST("login.php")
     Call<User> login(@Field("username") String username, @Field("password") String password);
+
+    @FormUrlEncoded
+    @POST("favorite.php")
+    Call<String> favorite(@Field("idSong") String idSong, @Field("idUser") String idUser);
+
+    @FormUrlEncoded
+    @POST("listsongs.php")
+    Call<List<Song>> getFavoriteSongs(@Field("idUser") String idUser);
 }

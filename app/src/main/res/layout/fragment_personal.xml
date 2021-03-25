@@ -42,7 +42,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/txtNameUser"
+            android:id="@+id/txtNameUserPs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imgUser"
@@ -54,18 +54,19 @@
 
 
         <TextView
-            android:id="@+id/txtUsername"
+            android:id="@+id/txtUsernamePs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txtNameUser"
+            android:layout_below="@+id/txtNameUserPs"
             android:layout_centerHorizontal="true"
             android:fontFamily="sans-serif"
             android:textColor="@color/address"
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/txtLogin"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:layout_marginTop="23dp"
             android:layout_toLeftOf="@+id/btnLogin"
             android:text="Login"

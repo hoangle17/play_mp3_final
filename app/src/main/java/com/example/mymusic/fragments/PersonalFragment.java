@@ -11,18 +11,23 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mymusic.R;
 import com.example.mymusic.activities.CoronaActivity;
 import com.example.mymusic.activities.LoginActivity;
+import com.example.mymusic.activities.MainActivity;
 import com.example.mymusic.activities.MusicDeviceActivity;
+import com.example.mymusic.activities.SongsActivity;
 import com.example.mymusic.activities.WeatherActivity;
 
 public class PersonalFragment extends Fragment {
     View view;
-    ImageButton imageButtonFavorite, imageButtonPhone, imageButtonWeather, imageButtonCovid, imageButtonLogin;
+    ImageButton imageButtonFavorite, imageButtonPhone, imageButtonWeather, imageButtonCovid;
     ImageView imageViewUser;
-    TextView textViewUsername, textViewNameUser;
+    public static TextView textViewUsername, textViewNameUser, textViewLogin;
+    public static ImageButton imageButtonLogin;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,7 +39,22 @@ public class PersonalFragment extends Fragment {
         return view;
     }
 
+
     private void clickEvent() {
+        imageButtonFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MainActivity.getUser() != null) {
+                    Intent intent = new Intent(getActivity(), SongsActivity.class);
+                    intent.putExtra("favorite_song", "favorite");
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            }
+        });
         imageButtonPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,6 +80,7 @@ public class PersonalFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
@@ -72,10 +93,10 @@ public class PersonalFragment extends Fragment {
         imageButtonPhone = view.findViewById(R.id.btnPhone);
         imageButtonWeather = view.findViewById(R.id.btnWheather);
         imageButtonCovid = view.findViewById(R.id.btnCovid);
+
         imageButtonLogin = view.findViewById(R.id.btnLogin);
-
-        textViewNameUser = view.findViewById(R.id.txtNameUser);
-        textViewUsername = view.findViewById(R.id.txtUsername);
+        textViewLogin = view.findViewById(R.id.txtLogin);
+        textViewNameUser = view.findViewById(R.id.txtNameUserPs);
+        textViewUsername = view.findViewById(R.id.txtUsernamePs);
     }
-
 }
