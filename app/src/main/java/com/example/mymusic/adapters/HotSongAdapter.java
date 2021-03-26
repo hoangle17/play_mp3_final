@@ -2,6 +2,7 @@ package com.example.mymusic.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +81,7 @@ public class HotSongAdapter extends RecyclerView.Adapter<HotSongAdapter.ViewHold
                             String result = response.body();
                             if (result.equals("success")) {
                                 Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
+                                imageViewLike.setImageResource(R.drawable.heart);
                             } else {
                                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                             }

@@ -201,8 +201,7 @@ public class PlaySongActivity extends AppCompatActivity {
                         String result = response.body();
                         if (result.equals("success")) {
                             Toast.makeText(NowPlayingFragmentBottom.getContextMinimize().getContext(), "Liked", Toast.LENGTH_SHORT).show();
-//                            imageViewLikeMini.setEnabled(false);
-                        } else {
+                            imageViewLikeMini.setImageResource(R.drawable.heart);                        } else {
                             Toast.makeText(NowPlayingFragmentBottom.getContextMinimize().getContext(), "Error", Toast.LENGTH_SHORT).show();
                         }
                     }

@@ -65,18 +65,8 @@ public class LoginActivity extends AppCompatActivity {
                             Intent intent = new Intent(LoginActivity.this.getApplicationContext(), MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                             startActivity(intent);
-
-                            PersonalFragment.textViewNameUser.setText(user.getName());
-                            PersonalFragment.textViewUsername.setText(user.getUsername());
-                            PersonalFragment.imageButtonLogin.setImageResource(R.drawable.ic_baseline_logout_24);
-                            PersonalFragment.textViewLogin.setText("Logout");
-                            //Lout out
-                            PersonalFragment.imageButtonLogin.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Toast.makeText(LoginActivity.this, "Logout", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                            setInforUserLogin(user);
+                            PersonalFragment.isLogged = true;
                         }
                     }
 
@@ -89,6 +79,15 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    private void setInforUserLogin(User user) {
+        PersonalFragment.textViewNameUser.setText(user.getName());
+        PersonalFragment.textViewUsername.setText(user.getUsername());
+        PersonalFragment.imageButtonLogin.setImageResource(R.drawable.ic_baseline_logout_24);
+        PersonalFragment.textViewLogin.setText("Logout");
+    }
+
 
     private void setViews() {
         editTextUsername = findViewById(R.id.txtUsername);

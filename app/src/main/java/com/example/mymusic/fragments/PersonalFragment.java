@@ -28,7 +28,7 @@ public class PersonalFragment extends Fragment {
     ImageView imageViewUser;
     public static TextView textViewUsername, textViewNameUser, textViewLogin;
     public static ImageButton imageButtonLogin;
-
+    public static boolean isLogged = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,7 +45,7 @@ public class PersonalFragment extends Fragment {
         imageButtonFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (LoginActivity.getUser() != null) {
+                if (LoginActivity.getUser() != null && isLogged) {
                     Intent intent = new Intent(getActivity(), SongsActivity.class);
                     intent.putExtra("favorite_song", "favorite");
                     startActivity(intent);
@@ -80,9 +80,20 @@ public class PersonalFragment extends Fragment {
         imageButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                if (!isLogged){
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }else {
+                    PersonalFragment.textViewNameUser.setText(null);
+                    PersonalFragment.textViewUsername.setText(null);
+                    PersonalFragment.imageButtonLogin.setImageResource(R.drawable.ic_baseline_login_24);
+                    PersonalFragment.textViewLogin.setText("Login");
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    isLogged = false;
+                }
             }
         });
     }

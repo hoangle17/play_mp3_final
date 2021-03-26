@@ -58,6 +58,7 @@ public class SongsActivity extends AppCompatActivity {
     Album album;
     public static boolean isClickFB = false;
     boolean isRetrieveFavoriteSongs = false;
+    public static final String imageFavorite = "https://tenebrous-segments.000webhostapp.com/Image/favorite.jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,7 @@ public class SongsActivity extends AppCompatActivity {
             getDataAlbum(album.getIdAlbum());
         }
         if (isRetrieveFavoriteSongs) {
-            setValueInView("Your favorite song", "https://tenebrous-segments.000webhostapp.com/Image/favorite.jpg");
+            setValueInView("Your favorite song", imageFavorite);
             getFavoriteSong(LoginActivity.getUser().getIdUser());
             isRetrieveFavoriteSongs = false;
         }
