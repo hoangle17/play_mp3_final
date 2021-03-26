@@ -201,7 +201,7 @@ public class PlaySongActivity extends AppCompatActivity {
                         String result = response.body();
                         if (result.equals("success")) {
                             Toast.makeText(NowPlayingFragmentBottom.getContextMinimize().getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                            imageViewLikeMini.setEnabled(false);
+//                            imageViewLikeMini.setEnabled(false);
                         } else {
                             Toast.makeText(NowPlayingFragmentBottom.getContextMinimize().getContext(), "Error", Toast.LENGTH_SHORT).show();
                         }
@@ -212,6 +212,24 @@ public class PlaySongActivity extends AppCompatActivity {
 
                     }
                 });
+                if (LoginActivity.getUser() != null) {
+                    DataService dataService1 = APIService.getService();
+                    Call<String> call1 = dataService1.favorite(songArrayList.get(position).getIdSong(), LoginActivity.getUser().getIdUser());
+                    call1.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            String result = response.body();
+                            if (result.equals("success")) {
+                                Toast.makeText(PlaySongActivity.this, "Added to favorite song", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+
+                        }
+                    });
+                }
             }
         });
     }

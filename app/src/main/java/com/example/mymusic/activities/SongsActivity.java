@@ -57,7 +57,7 @@ public class SongsActivity extends AppCompatActivity {
     Genre genre;
     Album album;
     public static boolean isClickFB = false;
-    boolean isRetrieveFavoriteSongs = true;
+    boolean isRetrieveFavoriteSongs = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +86,8 @@ public class SongsActivity extends AppCompatActivity {
         }
         if (isRetrieveFavoriteSongs) {
             setValueInView("Your favorite song", "https://tenebrous-segments.000webhostapp.com/Image/favorite.jpg");
-            getFavoriteSong(MainActivity.getUser().getIdUser());
+            getFavoriteSong(LoginActivity.getUser().getIdUser());
+            isRetrieveFavoriteSongs = false;
         }
     }
 

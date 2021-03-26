@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     private static FrameLayout frameLayoutPlayerMini;
     TabLayout tabLayout;
     ViewPager viewPager;
-    private static User user;
 
     public static FrameLayout getFrameLayoutPlayerMini() {
         return frameLayoutPlayerMini;
@@ -68,18 +67,24 @@ public class MainActivity extends AppCompatActivity {
         Fragment youtubeFragment = new YoutubeFragment();
         Fragment personalFragment = new PersonalFragment();
 
-
+        mainViewPagerAdapter.addFragment(personalFragment, "Personal");
         mainViewPagerAdapter.addFragment(homePageFragment, "Home");
         mainViewPagerAdapter.addFragment(searchFragment, "Search");
         mainViewPagerAdapter.addFragment(youtubeFragment, "MV");
-        mainViewPagerAdapter.addFragment(personalFragment, "Personal");
+
         viewPager.setAdapter(mainViewPagerAdapter);
         viewPager.setOffscreenPageLimit(4); //keep state fragment not reload
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setIcon(R.drawable.home);
-        tabLayout.getTabAt(1).setIcon(R.drawable.search);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_ondemand_video_24);
-        tabLayout.getTabAt(3).setIcon(R.drawable.ic_baseline_person_24);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_baseline_person_24);
+        tabLayout.getTabAt(1).setIcon(R.drawable.home);
+        tabLayout.getTabAt(2).setIcon(R.drawable.search);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_baseline_ondemand_video_24);
+        selectPage(1);
+    }
+
+    void selectPage(int pageIndex) {
+        tabLayout.setScrollPosition(pageIndex, 0f, true);
+        viewPager.setCurrentItem(pageIndex);
     }
 
     private void initView() {
@@ -107,26 +112,4 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    //retrieve user after login
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
-        user = (User) intent.getSerializableExtra("user");
-        PersonalFragment.textViewNameUser.setText(user.getName());
-        PersonalFragment.textViewUsername.setText(user.getUsername());
-        PersonalFragment.imageButtonLogin.setImageResource(R.drawable.ic_baseline_logout_24);
-        PersonalFragment.textViewLogin.setText("Logout");
-        //Lout out
-        PersonalFragment.imageButtonLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Logout", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public static User getUser() {
-        return user;
-    }
 }

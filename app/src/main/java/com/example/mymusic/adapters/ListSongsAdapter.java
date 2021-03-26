@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymusic.R;
+import com.example.mymusic.activities.LoginActivity;
 import com.example.mymusic.activities.PlaySongActivity;
 import com.example.mymusic.models.Song;
 import com.example.mymusic.services.APIService;
@@ -91,6 +92,24 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.View
 
                         }
                     });
+                    if (LoginActivity.getUser() != null) {
+                        DataService dataService1 = APIService.getService();
+                        Call<String> call1 = dataService1.favorite(songArrayList.get(getPosition()).getIdSong(), LoginActivity.getUser().getIdUser());
+                        call1.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                String result = response.body();
+                                if (result.equals("success")) {
+                                    Toast.makeText(context, "Added to favorite song", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+
+                            }
+                        });
+                    }
                 }
             });
             itemView.setOnClickListener(new View.OnClickListener() {

@@ -20,6 +20,7 @@ import com.example.mymusic.activities.MainActivity;
 import com.example.mymusic.activities.MusicDeviceActivity;
 import com.example.mymusic.activities.SongsActivity;
 import com.example.mymusic.activities.WeatherActivity;
+import com.facebook.login.Login;
 
 public class PersonalFragment extends Fragment {
     View view;
@@ -44,7 +45,7 @@ public class PersonalFragment extends Fragment {
         imageButtonFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (MainActivity.getUser() != null) {
+                if (LoginActivity.getUser() != null) {
                     Intent intent = new Intent(getActivity(), SongsActivity.class);
                     intent.putExtra("favorite_song", "favorite");
                     startActivity(intent);

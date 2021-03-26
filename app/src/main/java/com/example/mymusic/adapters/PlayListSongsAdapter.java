@@ -15,6 +15,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymusic.R;
+import com.example.mymusic.activities.LoginActivity;
 import com.example.mymusic.models.Song;
 import com.example.mymusic.services.APIService;
 import com.example.mymusic.services.DataService;
@@ -82,7 +83,6 @@ public class PlayListSongsAdapter extends RecyclerView.Adapter<PlayListSongsAdap
                             String result = response.body();
                             if (result.equals("success")) {
                                 Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
-                                imageViewLike.setEnabled(false);
                             } else {
                                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                             }
@@ -93,6 +93,24 @@ public class PlayListSongsAdapter extends RecyclerView.Adapter<PlayListSongsAdap
 
                         }
                     });
+                    if (LoginActivity.getUser() != null) {
+                        DataService dataService1 = APIService.getService();
+                        Call<String> call1 = dataService1.favorite(songArrayList.get(getPosition()).getIdSong(), LoginActivity.getUser().getIdUser());
+                        call1.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                String result = response.body();
+                                if (result.equals("success")) {
+                                    Toast.makeText(context, "Added to favorite song", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+
+                            }
+                        });
+                    }
                 }
             });
             itemView.setOnClickListener(new View.OnClickListener() {

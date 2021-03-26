@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mymusic.R;
+import com.example.mymusic.fragments.PersonalFragment;
 import com.example.mymusic.models.User;
 import com.example.mymusic.services.APIService;
 import com.example.mymusic.services.DataService;
@@ -28,6 +29,11 @@ public class LoginActivity extends AppCompatActivity {
     FloatingActionButton buttonLogin;
     EditText editTextUsername, editTextPass;
     TextView textViewSignIn;
+    private static User user;
+
+    public static User getUser() {
+        return user;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -52,14 +58,25 @@ public class LoginActivity extends AppCompatActivity {
                 call.enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
-                        User user = response.body();
+                        user = response.body();
                         if (user != null) {
                             Toast.makeText(LoginActivity.this, "Login successfully!", Toast.LENGTH_SHORT).show();
 
                             Intent intent = new Intent(LoginActivity.this.getApplicationContext(), MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                            intent.putExtra("user", user);
                             startActivity(intent);
+
+                            PersonalFragment.textViewNameUser.setText(user.getName());
+                            PersonalFragment.textViewUsername.setText(user.getUsername());
+                            PersonalFragment.imageButtonLogin.setImageResource(R.drawable.ic_baseline_logout_24);
+                            PersonalFragment.textViewLogin.setText("Logout");
+                            //Lout out
+                            PersonalFragment.imageButtonLogin.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Toast.makeText(LoginActivity.this, "Logout", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     }
 

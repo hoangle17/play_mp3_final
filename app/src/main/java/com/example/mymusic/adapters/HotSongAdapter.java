@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymusic.R;
+import com.example.mymusic.activities.LoginActivity;
 import com.example.mymusic.activities.PlaySongActivity;
 import com.example.mymusic.models.Song;
 import com.example.mymusic.services.APIService;
@@ -24,8 +25,6 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.example.mymusic.activities.MainActivity.getUser;
 
 public class HotSongAdapter extends RecyclerView.Adapter<HotSongAdapter.ViewHolder> {
     Context context;
@@ -81,7 +80,6 @@ public class HotSongAdapter extends RecyclerView.Adapter<HotSongAdapter.ViewHold
                             String result = response.body();
                             if (result.equals("success")) {
                                 Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
-                                imageViewLike.setEnabled(false);
                             } else {
                                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                             }
@@ -93,9 +91,9 @@ public class HotSongAdapter extends RecyclerView.Adapter<HotSongAdapter.ViewHold
                         }
                     });
                     //like from user
-                    if (getUser() != null) {
+                    if (LoginActivity.getUser() != null) {
                         DataService dataService1 = APIService.getService();
-                        Call<String> call1 = dataService1.favorite(songArrayList.get(getPosition()).getIdSong(), getUser().getIdUser());
+                        Call<String> call1 = dataService1.favorite(songArrayList.get(getPosition()).getIdSong(), LoginActivity.getUser().getIdUser());
                         call1.enqueue(new Callback<String>() {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
