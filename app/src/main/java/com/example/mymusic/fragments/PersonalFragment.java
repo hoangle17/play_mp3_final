@@ -3,6 +3,7 @@ package com.example.mymusic.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -21,11 +22,15 @@ import com.example.mymusic.activities.MusicDeviceActivity;
 import com.example.mymusic.activities.SongsActivity;
 import com.example.mymusic.activities.WeatherActivity;
 import com.facebook.login.Login;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import java.util.concurrent.Executor;
 
 public class PersonalFragment extends Fragment {
     View view;
     ImageButton imageButtonFavorite, imageButtonPhone, imageButtonWeather, imageButtonCovid;
-    ImageView imageViewUser;
+    public static ImageView imageViewUser;
     public static TextView textViewUsername, textViewNameUser, textViewLogin;
     public static ImageButton imageButtonLogin;
     public static boolean isLogged = false;
@@ -80,15 +85,17 @@ public class PersonalFragment extends Fragment {
         imageButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isLogged){
+                if (!isLogged) {
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                }else {
-                    PersonalFragment.textViewNameUser.setText(null);
-                    PersonalFragment.textViewUsername.setText(null);
+                } else {
+                    LoginActivity.mGoogleSignInClient.signOut();
+                    PersonalFragment.textViewNameUser.setText("");
+                    PersonalFragment.textViewUsername.setText("");
                     PersonalFragment.imageButtonLogin.setImageResource(R.drawable.ic_baseline_login_24);
                     PersonalFragment.textViewLogin.setText("Login");
+                    PersonalFragment.imageViewUser.setImageResource(R.drawable.ic_baseline_person_24);
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);

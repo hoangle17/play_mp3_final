@@ -42,31 +42,35 @@ public class SignUpActivity extends AppCompatActivity {
         textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DataService dataService = APIService.getService();
-                Call<String> call = dataService.createUser(String.valueOf(editTextUsername.getText().toString()),
-                        String.valueOf(editTextPass.getText().toString()),
-                        String.valueOf(editTextName.getText().toString()));
-                call.enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        String result = response.body();
-                        if (result.equals("available")) {
-                            Log.d("BBB", "fail");
-                            Toast.makeText(SignUpActivity.this, "User already exists!", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(SignUpActivity.this, "Success!", Toast.LENGTH_LONG).show();
-                            Log.d("BBB", "Success");
-                            editTextName.setText("");
-                            editTextPass.setText("");
-                            editTextName.setText("");
+                if (editTextUsername.getText().toString().matches("") || editTextPass.getText().toString().matches("")) {
+                    Toast.makeText(SignUpActivity.this, "Username or password cannot be blank!", Toast.LENGTH_SHORT).show();
+                } else {
+                    DataService dataService = APIService.getService();
+                    Call<String> call = dataService.createUser(String.valueOf(editTextUsername.getText().toString()),
+                            String.valueOf(editTextPass.getText().toString()),
+                            String.valueOf(editTextName.getText().toString()));
+                    call.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            String result = response.body();
+                            if (result.equals("available")) {
+                                Log.d("BBB", "fail");
+                                Toast.makeText(SignUpActivity.this, "User already exists!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(SignUpActivity.this, "Success!", Toast.LENGTH_LONG).show();
+                                Log.d("BBB", "Success");
+                                editTextName.setText("");
+                                editTextPass.setText("");
+                                editTextName.setText("");
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
 
-                    }
-                });
+                        }
+                    });
+                }
             }
         });
     }

@@ -85,4 +85,8 @@ public interface DataService {
     @FormUrlEncoded
     @POST("listsongs.php")
     Call<List<Song>> getFavoriteSongs(@Field("idUser") String idUser);
+
+    @FormUrlEncoded
+    @POST("returnuserfromgg.php")
+    Call<User> returnUserGG(@Field("username") String username, @Field("password") String password, @Field("name") String name);
 }

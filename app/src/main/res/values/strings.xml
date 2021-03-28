@@ -35,9 +35,6 @@
     <string name="facebook_app_id">734170097243733</string>
     <string name="fb_login_protocol_scheme">fb734170097243733</string>
 
-
-    <string name="facebook_app_id2">469435510525416</string>
-    <string name="facebook_login_protocol_scheme2">fb469435510525416</string>
     <string name="lyric">Lyric:</string>
     <string name="weather">Weather</string>
     <string name="favorite">Favorite</string>
@@ -58,5 +55,9 @@
     <string name="sign_in">Sign in</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="username">Username</string>
+    <string name="login">Login</string>
+
+    <string name="facebook_app_id2">791530684789992</string>
+    <string name="fb_login_protocol_scheme2">fb791530684789992</string>
 
 </resources>
