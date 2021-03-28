@@ -73,6 +73,7 @@ public class LoginActivity extends AppCompatActivity {
     public static GoogleSignInClient mGoogleSignInClient;
     String personName;
     String personEmail;
+    boolean isLoginGoogle = false;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -86,7 +87,6 @@ public class LoginActivity extends AppCompatActivity {
         setClickEvent();
 
         callbackManager = CallbackManager.Factory.create();
-
 
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("email");
@@ -207,6 +207,7 @@ public class LoginActivity extends AppCompatActivity {
                             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                             startActivity(intent);
                             PersonalFragment.isLogged = true;
+                            isLoginGoogle = false;
                         }
                     }
 
