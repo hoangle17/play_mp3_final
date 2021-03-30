@@ -8,12 +8,22 @@
         android:id="@+id/txtTitlePlaylist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="15dp"
-        android:fontFamily="@font/almendra_sc"
-        android:gravity="center"
-        android:text="@string/music_life"
-        android:textSize="30dp" />
+        android:layout_marginBottom="5dp"
+        android:text="Playlist"
+        android:textColor="#0a0a0a"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/playlistfinal" />
 
     <ListView
         android:id="@+id/lvPlaylist"
