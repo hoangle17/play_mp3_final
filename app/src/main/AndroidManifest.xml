@@ -19,12 +19,13 @@
         <activity android:name=".activities.WeatherActivity" />
         <activity android:name=".activities.PlayFromDeviceActivity" />
         <activity android:name=".activities.MusicDeviceActivity" />
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
         <activity
+            android:windowSoftInputMode="stateVisible|adjustPan"
+            android:configChanges="keyboardHidden|keyboard"
             android:name=".activities.PlaySongActivity"
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"

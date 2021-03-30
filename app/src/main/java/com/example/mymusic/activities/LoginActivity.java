@@ -3,6 +3,7 @@ package com.example.mymusic.activities;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mymusic.dialogs.CommentDiaLog;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -61,6 +62,11 @@ public class LoginActivity extends AppCompatActivity {
     EditText editTextUsername, editTextPass;
     TextView textViewSignIn;
     String user_lastname, user_firstname, user_email, user_id;
+
+    public static void setUser(User user) {
+        LoginActivity.user = user;
+    }
+
     private static User user;
 
     public static User getUser() {
@@ -118,7 +124,13 @@ public class LoginActivity extends AppCompatActivity {
                 parameters.putString("fields", "last_name,first_name,email");
                 request.setParameters(parameters);
                 request.executeAsync();
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent intent;
+                if (CommentDiaLog.isClickSendComment) {
+                    intent = new Intent(LoginActivity.this, PlaySongActivity.class);
+                    CommentDiaLog.isClickSendComment = false;
+                } else {
+                    intent = new Intent(LoginActivity.this.getApplicationContext(), MainActivity.class);
+                }
                 intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
             }
@@ -155,6 +167,16 @@ public class LoginActivity extends AppCompatActivity {
                 signIn();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (CommentDiaLog.isClickSendComment) {
+            Intent intent = new Intent(LoginActivity.this, PlaySongActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+        }
     }
 
     private void signIn() {
@@ -203,11 +225,17 @@ public class LoginActivity extends AppCompatActivity {
                         if (user != null) {
                             Toast.makeText(LoginActivity.this, "Login successfully!", Toast.LENGTH_SHORT).show();
 
-                            Intent intent = new Intent(LoginActivity.this.getApplicationContext(), MainActivity.class);
+                            Intent intent;
+                            if (CommentDiaLog.isClickSendComment) {
+                                intent = new Intent(LoginActivity.this, PlaySongActivity.class);
+                                CommentDiaLog.isClickSendComment = false;
+                            } else {
+                                intent = new Intent(LoginActivity.this.getApplicationContext(), MainActivity.class);
+                            }
                             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                             startActivity(intent);
                             PersonalFragment.isLogged = true;
-                            isLoginGoogle = false;
+//                            isLoginGoogle = true;
                         }
                     }
 
@@ -218,9 +246,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
             }
             // Signed in successfully, show authenticated UI.
         } catch (ApiException e) {
@@ -252,8 +277,13 @@ public class LoginActivity extends AppCompatActivity {
                             user = response.body();
                             if (user != null) {
                                 Toast.makeText(LoginActivity.this, "Login successfully!", Toast.LENGTH_SHORT).show();
-
-                                Intent intent = new Intent(LoginActivity.this.getApplicationContext(), MainActivity.class);
+                                Intent intent;
+                                if (CommentDiaLog.isClickSendComment) {
+                                    intent = new Intent(LoginActivity.this, PlaySongActivity.class);
+                                    CommentDiaLog.isClickSendComment = false;
+                                } else {
+                                    intent = new Intent(LoginActivity.this.getApplicationContext(), MainActivity.class);
+                                }
                                 intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                                 startActivity(intent);
                                 setInforUserLogin(user);

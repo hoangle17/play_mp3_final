@@ -59,5 +59,8 @@
 
     <string name="facebook_app_id2">791530684789992</string>
     <string name="fb_login_protocol_scheme2">fb791530684789992</string>
+    <string name="comment">Comment</string>
+    <string name="send">Send</string>
+    <string name="write_a_comment">Write a comment...</string>
 
 </resources>

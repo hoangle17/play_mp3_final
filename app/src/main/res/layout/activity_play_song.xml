@@ -16,27 +16,28 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
         <TextView
-            android:id="@+id/txtLyrics"
+            android:id="@+id/txtShowCmt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="12dp"
             android:gravity="center"
-            android:text="@string/lyrics"
+            android:text="@string/comment"
             android:textAllCaps="true"
             android:textColor="@color/colorPrimaryText"
             android:textSize="15dp"
             android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <ImageView
-            android:id="@+id/imgLyrics"
+            android:id="@+id/imgShowCmt"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:contentDescription="@string/app_name"
             android:src="@drawable/ic_up"
-            app:layout_constraintBottom_toTopOf="@+id/txtLyrics"
+            app:layout_constraintBottom_toTopOf="@+id/txtShowCmt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -50,7 +51,7 @@
             android:padding="12dp"
             android:src="@drawable/ic_play_arrow"
             android:tint="@color/colorWhite"
-            app:layout_constraintBottom_toTopOf="@+id/imgLyrics"
+            app:layout_constraintBottom_toTopOf="@+id/imgShowCmt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

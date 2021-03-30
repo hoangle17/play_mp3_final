@@ -47,6 +47,7 @@ import com.example.mymusic.adapters.HotSongAdapter;
 import com.example.mymusic.adapters.ListSongsAdapter;
 import com.example.mymusic.adapters.SearchSongAdapter;
 import com.example.mymusic.adapters.ViewPagerPlayListSong;
+import com.example.mymusic.dialogs.CommentDiaLog;
 import com.example.mymusic.fragments.LyricsFragment;
 import com.example.mymusic.fragments.NowPlayingFragmentBottom;
 import com.example.mymusic.fragments.PlayListSongsFragment;
@@ -85,7 +86,7 @@ public class PlaySongActivity extends AppCompatActivity {
     private static final int PERMISSION_STORAGE_CODE = 1000;
     CircleIndicator circleIndicatorPlay;
     Toolbar toolbarPlaySong;
-    TextView textViewCurrentTime, textViewTotalTime;
+    TextView textViewCurrentTime, textViewTotalTime, textViewShowComment;
     public static ImageButton imageButtonPlay;
     ImageButton imageButtonRepeat, imageButtonNext, imageButtonPrevious, imageButtonShuffle, imageButtonMore;
     ViewPager viewPagerPlay;
@@ -122,8 +123,18 @@ public class PlaySongActivity extends AppCompatActivity {
         setViews();
         eventClickPlay();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("INTENT_NAME"));
-
+        showComment();
         FacebookSdk.sdkInitialize(this.getApplicationContext());
+    }
+
+    private void showComment() {
+        textViewShowComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CommentDiaLog commentDiaLog = new CommentDiaLog(songArrayList.get(position));
+                commentDiaLog.show(getSupportFragmentManager(), "comment dialog");
+            }
+        });
     }
 
 
@@ -201,7 +212,8 @@ public class PlaySongActivity extends AppCompatActivity {
                         String result = response.body();
                         if (result.equals("success")) {
                             Toast.makeText(NowPlayingFragmentBottom.getContextMinimize().getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                            imageViewLikeMini.setImageResource(R.drawable.heart);                        } else {
+                            imageViewLikeMini.setImageResource(R.drawable.heart);
+                        } else {
                             Toast.makeText(NowPlayingFragmentBottom.getContextMinimize().getContext(), "Error", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -532,6 +544,7 @@ public class PlaySongActivity extends AppCompatActivity {
         toolbarPlaySong = findViewById(R.id.tlbPlaySong);
         textViewCurrentTime = findViewById(R.id.txtCurrentTime);
         textViewTotalTime = findViewById(R.id.txtTotalTime);
+        textViewShowComment = findViewById(R.id.txtShowCmt);
         imageButtonPlay = findViewById(R.id.btnPlay);
         imageButtonNext = findViewById(R.id.btnNext);
         imageButtonRepeat = findViewById(R.id.btnRepeat);
@@ -583,6 +596,7 @@ public class PlaySongActivity extends AppCompatActivity {
             imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
             imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
         }
+
     }
 
 

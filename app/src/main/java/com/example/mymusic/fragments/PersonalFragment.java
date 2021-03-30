@@ -90,6 +90,7 @@ public class PersonalFragment extends Fragment {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
+                    LoginActivity.setUser(null);
                     LoginActivity.mGoogleSignInClient.signOut();
                     PersonalFragment.textViewNameUser.setText("");
                     PersonalFragment.textViewUsername.setText("");

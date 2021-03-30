@@ -2,6 +2,7 @@ package com.example.mymusic.services;
 
 import com.example.mymusic.models.Advertise;
 import com.example.mymusic.models.Album;
+import com.example.mymusic.models.Comment;
 import com.example.mymusic.models.Genre;
 import com.example.mymusic.models.Playlist;
 import com.example.mymusic.models.Song;
@@ -89,4 +90,16 @@ public interface DataService {
     @FormUrlEncoded
     @POST("returnuserfromgg.php")
     Call<User> returnUserGG(@Field("username") String username, @Field("password") String password, @Field("name") String name);
+
+    @FormUrlEncoded
+    @POST("getcomment.php")
+    Call<List<Comment>> getAllComment(@Field("idSong") String idSong);
+
+    @FormUrlEncoded
+    @POST("sendcomment.php")
+    Call<String> sendComment(@Field("idUser") String idUser,
+                             @Field("idSong") String idSong,
+                             @Field("nameuser") String nameuser,
+                             @Field("content") String content,
+                             @Field("time") String time);
 }
