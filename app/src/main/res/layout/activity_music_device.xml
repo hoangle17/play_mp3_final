@@ -11,16 +11,16 @@
         android:id="@+id/lvDevice"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/titleMusic"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="1dp"
-        android:layout_marginLeft="1dp"
-        android:layout_marginTop="100dp" />
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp" />
 
     <LinearLayout
+        android:id="@+id/titleMusic"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="65dp"
         android:background="#202f40">
 
         <Button

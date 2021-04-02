@@ -25,7 +25,7 @@
             android:layout_height="200dp"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="70dp"
-            android:src="@drawable/circlecropped" />
+            android:src="@drawable/playalist" />
 
         <ImageView
             android:id="@+id/albumArt"
@@ -33,7 +33,7 @@
             android:layout_height="200dp"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="70dp"
-            android:background="@drawable/circlecropped"
+            android:background="@drawable/playalist"
             android:visibility="invisible" />
 
         <TextView
