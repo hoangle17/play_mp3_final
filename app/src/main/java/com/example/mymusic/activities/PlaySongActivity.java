@@ -11,6 +11,8 @@ import androidx.viewpager.widget.ViewPager;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DownloadManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -53,8 +55,11 @@ import com.example.mymusic.fragments.NowPlayingFragmentBottom;
 import com.example.mymusic.fragments.PlayListSongsFragment;
 import com.example.mymusic.fragments.ShowInformationSongFragment;
 import com.example.mymusic.models.Song;
+import com.example.mymusic.notification.CreateNotification;
 import com.example.mymusic.services.APIService;
 import com.example.mymusic.services.DataService;
+import com.example.mymusic.services.OnClearFromRecentService;
+import com.example.mymusic.services.Playable;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -82,7 +87,7 @@ import static com.example.mymusic.fragments.NowPlayingFragmentBottom.imageViewSo
 import static com.example.mymusic.fragments.NowPlayingFragmentBottom.textViewNameSongMini;
 import static com.example.mymusic.fragments.NowPlayingFragmentBottom.textViewSingerMini;
 
-public class PlaySongActivity extends AppCompatActivity {
+public class PlaySongActivity extends AppCompatActivity implements Playable {
     private static final int PERMISSION_STORAGE_CODE = 1000;
     CircleIndicator circleIndicatorPlay;
     Toolbar toolbarPlaySong;
@@ -108,6 +113,7 @@ public class PlaySongActivity extends AppCompatActivity {
     Intent intent;
     CallbackManager callbackManager;
     ShareDialog shareDialog;
+    NotificationManager notificationManager;
 
     public static MediaPlayer getMediaPlayer() {
         return mediaPlayer;
@@ -125,6 +131,27 @@ public class PlaySongActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("INTENT_NAME"));
         showComment();
         FacebookSdk.sdkInitialize(this.getApplicationContext());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChanel();
+            registerReceiver(broadcastReceiver, new IntentFilter("TRACKS_TRACKS"));
+            startService(new Intent(getBaseContext(), OnClearFromRecentService.class));
+        }
+        //create notification
+        CreateNotification.createNotification(PlaySongActivity.this,
+                songArrayList.get(0), R.drawable.ic_baseline_pause_24);
+
+    }
+
+    private void createChanel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(CreateNotification.CHANEL_ID,
+                    "KOD Dev", NotificationManager.IMPORTANCE_LOW);
+            notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+        }
     }
 
     private void showComment() {
@@ -259,15 +286,65 @@ public class PlaySongActivity extends AppCompatActivity {
         }
     }
 
-
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getExtras().getString("actionname");
+            switch (action) {
+                case CreateNotification.ACTION_PREVIOUS:
+                    onTrackPrevious();
+                    break;
+                case CreateNotification.ACTION_PLAY:
+                    if (mediaPlayer.isPlaying()) {
+                        onTrackPause();
+                    } else {
+                        onTrackPlay();
+                    }
+                    break;
+                case CreateNotification.ACTION_NEXT:
+                    onTrackNext();
+                    break;
+            }
+        }
+    };
     //song from list play
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Song receiver = (Song) intent.getParcelableExtra("moveSong");
-            playFromPlayList(receiver);
+            if (intent.hasExtra("moveSong")) {
+                Song receiver = (Song) intent.getParcelableExtra("moveSong");
+                playFromPlayList(receiver);
+            }
         }
     };
+
+    @Override
+    public void onTrackPrevious() {
+        handlePreviousSong();
+    }
+
+    @Override
+    public void onTrackPlay() {
+        mediaPlayer.start();
+        imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
+        imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
+        CreateNotification.createNotification(PlaySongActivity.this, songArrayList.get(position),
+                R.drawable.ic_baseline_pause_24);
+    }
+
+    @Override
+    public void onTrackPause() {
+        mediaPlayer.pause();
+        imageButtonPlay.setImageResource(R.drawable.ic_play_arrow);
+        imageButtonPlayMini.setImageResource(R.drawable.ic_play_arrow);
+        CreateNotification.createNotification(PlaySongActivity.this, songArrayList.get(position),
+                R.drawable.ic_play_arrow);
+    }
+
+    @Override
+    public void onTrackNext() {
+        handleNextSong();
+    }
 
     private void playFromPlayList(Song receivedSong) {
         imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
@@ -280,8 +357,11 @@ public class PlaySongActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.cancelAll();
+        }
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mReceiver);
     }
 
@@ -332,15 +412,7 @@ public class PlaySongActivity extends AppCompatActivity {
         imageButtonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                    imageButtonPlay.setImageResource(R.drawable.ic_play_arrow);
-                    imageButtonPlayMini.setImageResource(R.drawable.ic_play_arrow);
-                } else {
-                    mediaPlayer.start();
-                    imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
-                    imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
-                }
+                handleButtonPlay();
             }
         });
         imageButtonRepeat.setOnClickListener(new View.OnClickListener() {
@@ -396,92 +468,129 @@ public class PlaySongActivity extends AppCompatActivity {
         imageButtonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (songArrayList.size() > 0) {
-                    if (mediaPlayer.isPlaying() || mediaPlayer != null) {
-                        mediaPlayer.stop();
-                        mediaPlayer.release();
-                        mediaPlayer = null;
-                    }
-                    if (position < (songArrayList.size())) {
-                        imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
-                        imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
-                        position++;
-                        if (repeat == true) {
-                            if (position == 0) {
-                                position = songArrayList.size();
-                            }
-                            position -= 1;
-                        }
-                        if (checkRandom == true) {
-                            Random random = new Random();
-                            int index = random.nextInt(songArrayList.size());
-                            if (index == position) {
-                                position = index - 1;
-                            }
-                            position = index;
-                        }
-                        if (position > (songArrayList.size() - 1)) {
-                            position = 0;
-                        }
-                        playSong(songArrayList.get(position));
-                        updateTime();
-                    }
-                }
-                imageButtonPrevious.setClickable(false);
-                imageButtonNext.setClickable(false);
-                Handler handler1 = new Handler();
-                handler1.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        imageButtonPrevious.setClickable(true);
-                        imageButtonNext.setClickable(true);
-                    }
-                }, 5000);
+                handleNextSong();
             }
         });
         imageButtonPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (songArrayList.size() > 0) {
-                    if (mediaPlayer.isPlaying() || mediaPlayer != null) {
-                        mediaPlayer.stop();
-                        mediaPlayer.release();
-                        mediaPlayer = null;
-                    }
-                    if (position < (songArrayList.size())) {
-                        imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
-                        imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
-                        position--;
-                        if (position < 0) {
-                            position = songArrayList.size() - 1;
-                        }
-                        if (repeat == true) {
-                            position += 1;
-                        }
-                        if (checkRandom == true) {
-                            Random random = new Random();
-                            int index = random.nextInt(songArrayList.size());
-                            if (index == position) {
-                                position = index - 1;
-                            }
-                            position = index;
-                        }
-                        playSong(songArrayList.get(position));
-                        updateTime();
-                    }
-                }
-                imageButtonPrevious.setClickable(false);
-                imageButtonPlay.setClickable(false);
-                Handler handler1 = new Handler();
-                handler1.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        imageButtonPrevious.setClickable(true);
-                        imageButtonPlay.setClickable(true);
-                    }
-                }, 5000);
+                handlePreviousSong();
             }
         });
+    }
+
+    private void handleButtonPlay() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+            imageButtonPlay.setImageResource(R.drawable.ic_play_arrow);
+            imageButtonPlayMini.setImageResource(R.drawable.ic_play_arrow);
+            CreateNotification.createNotification(PlaySongActivity.this, songArrayList.get(position),
+                    R.drawable.ic_play_arrow);
+        } else {
+            mediaPlayer.start();
+            imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
+            imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
+            CreateNotification.createNotification(PlaySongActivity.this, songArrayList.get(position),
+                    R.drawable.ic_baseline_pause_24);
+        }
+    }
+
+    private void handlePreviousSong() {
+        if (songArrayList.size() > 0) {
+            if (mediaPlayer.isPlaying() || mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
+            if (position < (songArrayList.size())) {
+                imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
+                imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
+                CreateNotification.createNotification(PlaySongActivity.this, songArrayList.get(position),
+                        R.drawable.ic_baseline_pause_24);
+                position--;
+                if (position < 0) {
+                    position = songArrayList.size() - 1;
+                }
+                if (repeat == true) {
+                    position += 1;
+                }
+                if (checkRandom == true) {
+                    Random random = new Random();
+                    int index = random.nextInt(songArrayList.size());
+                    if (index == position) {
+                        position = index - 1;
+                    }
+                    position = index;
+                }
+                Song song = songArrayList.get(position);
+                CreateNotification.createNotification(PlaySongActivity.this, song,
+                        R.drawable.ic_baseline_pause_24);
+                playSong(song);
+                updateTime();
+                setViewMinimize(song);
+            }
+        }
+        imageButtonPrevious.setClickable(false);
+        imageButtonPlay.setClickable(false);
+        Handler handler1 = new Handler();
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                imageButtonPrevious.setClickable(true);
+                imageButtonPlay.setClickable(true);
+            }
+        }, 5000);
+    }
+
+    private void handleNextSong() {
+        if (songArrayList.size() > 0) {
+//            if (mediaPlayer.isPlaying() || mediaPlayer != null) {
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
+            if (position < (songArrayList.size())) {
+                imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
+                imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
+                CreateNotification.createNotification(PlaySongActivity.this, songArrayList.get(position),
+                        R.drawable.ic_baseline_pause_24);
+                position++;
+                if (repeat == true) {
+                    if (position == 0) {
+                        position = songArrayList.size();
+                    }
+                    position -= 1;
+                }
+                if (checkRandom == true) {
+                    Random random = new Random();
+                    int index = random.nextInt(songArrayList.size());
+                    if (index == position) {
+                        position = index - 1;
+                    }
+                    position = index;
+                }
+                if (position > (songArrayList.size() - 1)) {
+                    position = 0;
+                }
+                Song song = songArrayList.get(position);
+                CreateNotification.createNotification(PlaySongActivity.this, song,
+                        R.drawable.ic_baseline_pause_24);
+                playSong(song);
+                updateTime();
+                setViewMinimize(song);
+            }
+        }
+        imageButtonPrevious.setClickable(false);
+        imageButtonNext.setClickable(false);
+        Handler handler1 = new Handler();
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                imageButtonPrevious.setClickable(true);
+                imageButtonNext.setClickable(true);
+            }
+        }, 5000);
     }
 
     @SuppressLint("RestrictedApi")
@@ -593,7 +702,7 @@ public class PlaySongActivity extends AppCompatActivity {
         if (songArrayList.size() > 0) {
             getSupportActionBar().setTitle(songArrayList.get(0).getNameSong());
             new PlayMp3().execute(songArrayList.get(0).getLinkSong());
-            imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
+//            imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
             imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
         }
 

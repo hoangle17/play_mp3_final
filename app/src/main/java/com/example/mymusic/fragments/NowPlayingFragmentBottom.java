@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.mymusic.R;
 import com.example.mymusic.activities.PlaySongActivity;
 import com.example.mymusic.models.Song;
+import com.example.mymusic.notification.CreateNotification;
 import com.example.mymusic.services.APIService;
 import com.example.mymusic.services.DataService;
 
@@ -23,6 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.example.mymusic.activities.PlaySongActivity.imageButtonPlay;
+import static com.example.mymusic.activities.PlaySongActivity.mediaPlayer;
 
 public class NowPlayingFragmentBottom extends Fragment {
     public static TextView textViewNameSongMini, textViewSingerMini;
@@ -49,6 +51,8 @@ public class NowPlayingFragmentBottom extends Fragment {
                     PlaySongActivity.getMediaPlayer().start();
                     imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
                     imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
+//                    CreateNotification.createNotification(getActivity(), PlaySongActivity.songArrayList.get(),
+//                            R.drawable.ic_baseline_pause_24);
                 }
             }
         });
