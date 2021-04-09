@@ -137,10 +137,11 @@ public class PlaySongActivity extends AppCompatActivity implements Playable {
             registerReceiver(broadcastReceiver, new IntentFilter("TRACKS_TRACKS"));
             startService(new Intent(getBaseContext(), OnClearFromRecentService.class));
         }
-        //create notification
-        CreateNotification.createNotification(PlaySongActivity.this,
-                songArrayList.get(0), R.drawable.ic_baseline_pause_24);
-
+        if (songArrayList.size() > 0) {
+            //create notification
+            CreateNotification.createNotification(PlaySongActivity.this,
+                    songArrayList.get(0), R.drawable.ic_baseline_pause_24);
+        }
     }
 
     private void createChanel() {
@@ -702,7 +703,7 @@ public class PlaySongActivity extends AppCompatActivity implements Playable {
         if (songArrayList.size() > 0) {
             getSupportActionBar().setTitle(songArrayList.get(0).getNameSong());
             new PlayMp3().execute(songArrayList.get(0).getLinkSong());
-//            imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
+            imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
             imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
         }
 
