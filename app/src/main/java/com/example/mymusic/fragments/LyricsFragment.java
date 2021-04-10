@@ -1,5 +1,6 @@
 package com.example.mymusic.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mymusic.R;
+import com.example.mymusic.activities.PlaySongActivity;
 import com.example.mymusic.models.Song;
 
 import org.json.JSONException;
@@ -39,7 +41,12 @@ public class LyricsFragment extends Fragment {
 
     public void setLyricSong(Song song) {
         String url = getUrlLyric(song);
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        RequestQueue queue = null;
+        try {
+            queue = Volley.newRequestQueue(getActivity());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -59,7 +66,11 @@ public class LyricsFragment extends Fragment {
             }
         });
         // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        try {
+            queue.add(stringRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private String getUrlLyric(Song song) {

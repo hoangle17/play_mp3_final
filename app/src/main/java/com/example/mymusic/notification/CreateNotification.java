@@ -57,7 +57,7 @@ public class CreateNotification {
             pendingIntentNext = PendingIntent.getBroadcast(context, 0, intentNext, PendingIntent.FLAG_UPDATE_CURRENT);
             drw_next = R.drawable.ic_baseline_skip_next_24;
 
-            notification = new NotificationCompat.Builder(context, CHANEL_ID)
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANEL_ID)
                     .setSmallIcon(R.drawable.ic_baseline_music_note_24)
                     .setContentTitle(song.getNameSong())
                     .setContentText(song.getSinger())
@@ -71,9 +71,8 @@ public class CreateNotification {
                             .setShowActionsInCompactView(0, 1, 2)
                             .setMediaSession(mediaSessionCompat.getSessionToken())
                     )
-                    .setPriority(NotificationCompat.PRIORITY_LOW)
-                    .build();
-
+                    .setPriority(NotificationCompat.PRIORITY_LOW);
+            notification = builder.build();
             notificationManagerCompat.notify(1, notification);
         }
     }

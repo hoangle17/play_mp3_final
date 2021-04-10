@@ -137,7 +137,7 @@ public class PlaySongActivity extends AppCompatActivity implements Playable {
             registerReceiver(broadcastReceiver, new IntentFilter("TRACKS_TRACKS"));
             startService(new Intent(getBaseContext(), OnClearFromRecentService.class));
         }
-        if (songArrayList.size() > 0) {
+        if(songArrayList.size() > 0){
             //create notification
             CreateNotification.createNotification(PlaySongActivity.this,
                     songArrayList.get(0), R.drawable.ic_baseline_pause_24);

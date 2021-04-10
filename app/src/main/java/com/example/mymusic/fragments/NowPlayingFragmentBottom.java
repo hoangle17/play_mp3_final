@@ -47,11 +47,13 @@ public class NowPlayingFragmentBottom extends Fragment {
                     PlaySongActivity.getMediaPlayer().pause();
                     imageButtonPlayMini.setImageResource(R.drawable.ic_play_arrow);
                     imageButtonPlay.setImageResource(R.drawable.ic_play_arrow);
+//                    CreateNotification.createNotification(getActivity(), PlaySongActivity.songArrayList.get(position),
+//                            R.drawable.ic_play_arrow);
                 } else {
                     PlaySongActivity.getMediaPlayer().start();
                     imageButtonPlayMini.setImageResource(R.drawable.ic_baseline_pause_24);
                     imageButtonPlay.setImageResource(R.drawable.ic_baseline_pause_24);
-//                    CreateNotification.createNotification(getActivity(), PlaySongActivity.songArrayList.get(),
+//                    CreateNotification.createNotification(getActivity(), PlaySongActivity.songArrayList.get(position),
 //                            R.drawable.ic_baseline_pause_24);
                 }
             }
