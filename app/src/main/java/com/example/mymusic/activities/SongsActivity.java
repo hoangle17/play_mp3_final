@@ -58,7 +58,7 @@ public class SongsActivity extends AppCompatActivity {
     Album album;
     public static boolean isClickFB = false;
     boolean isRetrieveFavoriteSongs = false;
-    public static final String imageFavorite = "https://tenebrous-segments.000webhostapp.com/Image/favorite.jpg";
+    public static final String imageFavorite = "https://morning-washer.000webhostapp.com/Image/favorite.jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
