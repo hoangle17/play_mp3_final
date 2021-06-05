@@ -17,7 +17,7 @@ public class SlashScreen extends AppCompatActivity {
             public void run() {
                 try {
                     super.run();
-                    sleep(7000);
+                    sleep(4000);
                 } catch (Exception e) {
 
                 } finally {

@@ -41,7 +41,8 @@
         <activity android:name=".activities.GenreFromTopicActivity" />
         <activity android:name=".activities.ListTopicActivity" />
         <activity android:name=".activities.ListPlaylistActivity" />
-        <activity android:name=".activities.SongsActivity" />
+        <activity android:name=".activities.SongsActivity"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".activities.MainActivity"
             android:launchMode="singleTop"

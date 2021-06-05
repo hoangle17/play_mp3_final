@@ -97,7 +97,6 @@ public class CommentDiaLog extends AppCompatDialogFragment {
                 isClickSendComment = true;
                 if (LoginActivity.getUser() == null) {
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
                     if (editTextCmt.getText().toString().trim().equals("")) {

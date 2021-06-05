@@ -56,7 +56,6 @@ public class PersonalFragment extends Fragment {
                     startActivity(intent);
                 } else {
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 }
             }
@@ -87,7 +86,6 @@ public class PersonalFragment extends Fragment {
             public void onClick(View view) {
                 if (!isLogged) {
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
                     LoginActivity.setUser(null);
