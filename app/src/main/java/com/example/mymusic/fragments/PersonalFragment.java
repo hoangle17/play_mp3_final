@@ -21,7 +21,12 @@ import com.example.mymusic.activities.MainActivity;
 import com.example.mymusic.activities.MusicDeviceActivity;
 import com.example.mymusic.activities.SongsActivity;
 import com.example.mymusic.activities.WeatherActivity;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.Login;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -99,9 +104,26 @@ public class PersonalFragment extends Fragment {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     isLogged = false;
+                    logoutFromFacebook();
                 }
             }
         });
+    }
+
+    public void logoutFromFacebook() {
+
+        if (AccessToken.getCurrentAccessToken() == null) {
+            return; // user already logged out
+        }
+
+        new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/permissions/", null, HttpMethod.DELETE, new GraphRequest
+                .Callback() {
+            @Override
+            public void onCompleted(GraphResponse graphResponse) {
+                LoginManager.getInstance().logOut();
+
+            }
+        }).executeAsync();
     }
 
     private void setViews() {

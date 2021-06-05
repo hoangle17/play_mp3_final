@@ -75,11 +75,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private CallbackManager callbackManager;
     private LoginButton loginButton;
-    SignInButton signInButton;
     public static GoogleSignInClient mGoogleSignInClient;
     String personName;
     String personEmail;
-    boolean isLoginGoogle = false;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -92,59 +90,14 @@ public class LoginActivity extends AppCompatActivity {
         setViews();
         setClickEvent();
 
-        callbackManager = CallbackManager.Factory.create();
-
         loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email");
-
-        // Callback registration
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
-                GraphRequest request = GraphRequest.newMeRequest(
-                        AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(JSONObject me, GraphResponse response) {
-                                try {
-                                    user_lastname = me.optString("last_name");
-                                    user_firstname = me.optString("first_name");
-                                    user_email = response.getJSONObject().optString("email");
-                                    user_id = me.getString("id");
-                                    PersonalFragment.textViewNameUser.setText(user_firstname + "\t" + user_lastname);
-                                    PersonalFragment.textViewUsername.setText(user_email);
-                                    Picasso.with(LoginActivity.this).load("http://graph.facebook.com/" + user_id + "/picture?type=large").into(PersonalFragment.imageViewUser);
-                                    PersonalFragment.isLogged = true;
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "last_name,first_name,email");
-                request.setParameters(parameters);
-                request.executeAsync();
-                Intent intent;
-                if (CommentDiaLog.isClickSendComment) {
-                    intent = new Intent(LoginActivity.this, PlaySongActivity.class);
-                    CommentDiaLog.isClickSendComment = false;
-                } else {
-                    intent = new Intent(LoginActivity.this.getApplicationContext(), MainActivity.class);
-                }
-                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                // App code
+            public void onClick(View view) {
+                setLoginFb();
             }
         });
+
 
         // Configure sign-in to request the user's ID, email address, and basic
 // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -168,6 +121,90 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void setLoginFb() {
+        callbackManager = CallbackManager.Factory.create();
+        loginButton.setReadPermissions("email");
+        // Callback registration
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                GraphRequest request = GraphRequest.newMeRequest(
+                        AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject me, GraphResponse response) {
+                                try {
+                                    user_lastname = me.optString("last_name");
+                                    user_firstname = me.optString("first_name");
+                                    user_email = response.getJSONObject().optString("email");
+                                    user_id = me.getString("id");
+//                                    user_id = loginResult.getAccessToken().getUserId();
+                                    Log.d("userid", user_id);
+                                    PersonalFragment.textViewNameUser.setText(user_firstname + "\t" + user_lastname);
+                                    PersonalFragment.textViewUsername.setText(user_email);
+                                    Picasso.with(LoginActivity.this).load("https://graph.facebook.com/" + user_id + "/picture?type=large").into(PersonalFragment.imageViewUser);
+
+                                    PersonalFragment.imageButtonLogin.setImageResource(R.drawable.ic_baseline_logout_24);
+                                    PersonalFragment.textViewLogin.setText("Logout");
+
+                                    String name = user_lastname + " " + user_firstname;
+                                    String pass = "";
+                                    getUserFromFb(user_email, pass, name);
+                                    PersonalFragment.isLogged = true;
+                                    finish();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "last_name,first_name,email");
+                request.setParameters(parameters);
+                request.executeAsync();
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+            }
+        });
+    }
+
+    private void getUserFromFb(String user_email, String pass, String name) {
+        DataService dataService = APIService.getService();
+        Call<User> call = dataService.returnUserGG(user_email, pass, name);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                user = response.body();
+                if (user != null) {
+                    Toast.makeText(LoginActivity.this, "Login successfully!", Toast.LENGTH_SHORT).show();
+
+                    Intent intent;
+                    if (CommentDiaLog.isClickSendComment) {
+                        intent = new Intent(LoginActivity.this, PlaySongActivity.class);
+                        CommentDiaLog.isClickSendComment = false;
+                    } else {
+                        intent = new Intent(LoginActivity.this.getApplicationContext(), MainActivity.class);
+                    }
+                    intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -194,6 +231,9 @@ public class LoginActivity extends AppCompatActivity {
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
+        }
+        if (callbackManager != null) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -235,7 +275,7 @@ public class LoginActivity extends AppCompatActivity {
                             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                             startActivity(intent);
                             PersonalFragment.isLogged = true;
-//                            isLoginGoogle = true;
+                            finish();
                         }
                     }
 
@@ -288,6 +328,7 @@ public class LoginActivity extends AppCompatActivity {
                                 startActivity(intent);
                                 setInforUserLogin(user);
                                 PersonalFragment.isLogged = true;
+                                finish();
                             }
                         }
 
