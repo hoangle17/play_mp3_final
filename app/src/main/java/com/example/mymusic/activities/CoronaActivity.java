@@ -25,6 +25,7 @@ public class CoronaActivity extends AppCompatActivity {
     TextView textViewTotal, textViewDead, textViewNewDead, textViewRecover, textViewNewRecover;
     ImageView imageViewBack;
     String URL = "https://api.covid19api.com/summary";
+    public static int INDEX_VIETNAM_CORONA = 188;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,95 +37,74 @@ public class CoronaActivity extends AppCompatActivity {
 
     private void getData() {
         final RequestQueue requestQueue = Volley.newRequestQueue(this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(URL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONArray jsonArray = response.getJSONArray("Countries");
-                    JSONObject jsonObjectVN = jsonArray.getJSONObject(186);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(URL, null, response -> {
+            try {
+                JSONArray jsonArray = response.getJSONArray("Countries");
+                JSONObject jsonObjectVN = jsonArray.getJSONObject(INDEX_VIETNAM_CORONA);
 
-                    textViewTotal.setText(jsonObjectVN.getString("TotalConfirmed"));
-                    textViewDead.setText(jsonObjectVN.getString("TotalDeaths"));
-                    textViewRecover.setText(jsonObjectVN.getString("TotalRecovered"));
-                    textViewNewRecover.setText(jsonObjectVN.getString("NewRecovered"));
-                    textViewNewDead.setText(jsonObjectVN.getString("NewDeaths"));
+                textViewTotal.setText(jsonObjectVN.getString("TotalConfirmed"));
+                textViewDead.setText(jsonObjectVN.getString("TotalDeaths"));
+                textViewRecover.setText(jsonObjectVN.getString("TotalRecovered"));
+                textViewNewRecover.setText(jsonObjectVN.getString("NewRecovered"));
+                textViewNewDead.setText(jsonObjectVN.getString("NewDeaths"));
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+        }, error -> {
 
-
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
         });
         requestQueue.add(jsonObjectRequest);
 
-        buttonGlobal.setOnClickListener(new View.OnClickListener() {
+        buttonGlobal.setOnClickListener(v -> {
+            buttonVN.setBackgroundResource(R.drawable.statistic_button);
+            buttonGlobal.setBackgroundResource(R.drawable.spinner_bg);
+            JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(URL, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONObject jsonObjectGlo = response.getJSONObject("Global");
 
-            @Override
-            public void onClick(View v) {
-                buttonVN.setBackgroundResource(R.drawable.statistic_button);
-                buttonGlobal.setBackgroundResource(R.drawable.spinner_bg);
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(URL, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONObject jsonObjectGlo = response.getJSONObject("Global");
+                        textViewTotal.setText(jsonObjectGlo.getString("TotalConfirmed"));
+                        textViewDead.setText(jsonObjectGlo.getString("TotalDeaths"));
+                        textViewRecover.setText(jsonObjectGlo.getString("TotalRecovered"));
+                        textViewNewRecover.setText(jsonObjectGlo.getString("NewRecovered"));
+                        textViewNewDead.setText(jsonObjectGlo.getString("NewDeaths"));
 
-                            textViewTotal.setText(jsonObjectGlo.getString("TotalConfirmed"));
-                            textViewDead.setText(jsonObjectGlo.getString("TotalDeaths"));
-                            textViewRecover.setText(jsonObjectGlo.getString("TotalRecovered"));
-                            textViewNewRecover.setText(jsonObjectGlo.getString("NewRecovered"));
-                            textViewNewDead.setText(jsonObjectGlo.getString("NewDeaths"));
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+                }
 
 
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+            }, error -> {
 
-                    }
-                });
-                requestQueue.add(jsonObjectRequest);
-            }
+            });
+            requestQueue.add(jsonObjectRequest1);
         });
-        buttonVN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                buttonVN.setBackgroundResource(R.drawable.spinner_bg);
-                buttonGlobal.setBackgroundResource(R.drawable.statistic_button);
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(URL, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("Countries");
-                            JSONObject jsonObjectVN = jsonArray.getJSONObject(186);
+        buttonVN.setOnClickListener(v -> {
+            buttonVN.setBackgroundResource(R.drawable.spinner_bg);
+            buttonGlobal.setBackgroundResource(R.drawable.statistic_button);
+            JsonObjectRequest jsonObjectRequest12 = new JsonObjectRequest(URL, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONArray jsonArray = response.getJSONArray("Countries");
+                        JSONObject jsonObjectVN = jsonArray.getJSONObject(INDEX_VIETNAM_CORONA);
 
-                            textViewTotal.setText(jsonObjectVN.getString("TotalConfirmed"));
-                            textViewDead.setText(jsonObjectVN.getString("TotalDeaths"));
-                            textViewRecover.setText(jsonObjectVN.getString("TotalRecovered"));
-                            textViewNewRecover.setText(jsonObjectVN.getString("NewRecovered"));
-                            textViewNewDead.setText(jsonObjectVN.getString("NewDeaths"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        textViewTotal.setText(jsonObjectVN.getString("TotalConfirmed"));
+                        textViewDead.setText(jsonObjectVN.getString("TotalDeaths"));
+                        textViewRecover.setText(jsonObjectVN.getString("TotalRecovered"));
+                        textViewNewRecover.setText(jsonObjectVN.getString("NewRecovered"));
+                        textViewNewDead.setText(jsonObjectVN.getString("NewDeaths"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                }
+            }, error -> {
 
-                    }
-                });
-                requestQueue.add(jsonObjectRequest);
-            }
+            });
+            requestQueue.add(jsonObjectRequest12);
         });
     }
 

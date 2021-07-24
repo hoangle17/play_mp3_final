@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.session.MediaSession;
 import android.os.Build;
 import android.support.v4.media.session.MediaSessionCompat;
 
@@ -33,8 +34,6 @@ public class CreateNotification {
     public static void createNotification(Context context, Song song, int playbutton) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-            MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(context, "tag");
-
             Bitmap icon = getBitmapFromURL(song.getImageSong());
 
             PendingIntent pendingIntentPrevious;
@@ -68,9 +67,7 @@ public class CreateNotification {
                     .addAction(playbutton, "Play", pendingIntentPlay)
                     .addAction(drw_next, "Next", pendingIntentNext)
                     .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                            .setShowActionsInCompactView(0, 1, 2)
-                            .setMediaSession(mediaSessionCompat.getSessionToken())
-                    )
+                            .setShowActionsInCompactView(0, 1, 2))
                     .setPriority(NotificationCompat.PRIORITY_LOW);
             notification = builder.build();
             notificationManagerCompat.notify(1, notification);
